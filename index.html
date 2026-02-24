@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinder Security — AI Red Team as a Service</title>
+    <meta name="description" content="We break AI systems before attackers do. Offensive security testing for LLMs, chatbots, AI agents, and RAG pipelines.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #06060b;
+            --bg-secondary: #0c0c14;
+            --bg-card: #0f0f1a;
+            --ember-hot: #ff4500;
+            --ember-warm: #ff6b35;
+            --ember-glow: #ffb347;
+            --ember-faint: rgba(255, 107, 53, 0.08);
+            --text-primary: #e8e6e1;
+            --text-secondary: #8a8a8a;
+            --text-muted: #555;
+            --border: rgba(255, 107, 53, 0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Grain overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Ember particles background */
+        .ember-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ember-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--ember-warm);
+            border-radius: 50%;
+            animation: float-up linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes float-up {
+            0% { opacity: 0; transform: translateY(100vh) scale(0); }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.2; }
+            100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(6, 6, 11, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+        }
+
+        .nav-logo .flame {
+            font-size: 1.4rem;
+        }
+
+        .nav-logo span {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover { color: var(--ember-warm); }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 69, 0, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--ember-warm);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1.5rem;
+            border-radius: 100px;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero h1 .accent {
+            background: linear-gradient(135deg, var(--ember-hot), var(--ember-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ember-hot), var(--ember-warm));
+            color: #fff;
+            padding: 0.9rem 2.2rem;
+            border: none;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 25px rgba(255, 69, 0, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 35px rgba(255, 69, 0, 0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            padding: 0.9rem 2.2rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--ember-warm);
+            color: var(--ember-warm);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            animation: fadeInUp 0.8s ease-out 1s both;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--ember-warm), transparent);
+            animation: pulse-line 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-line {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Sections */
+        section {
+            padding: 6rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--ember-warm);
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            line-height: 1.15;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 650px;
+            font-weight: 300;
+            margin-bottom: 3.5rem;
+        }
+
+        /* Problem Section */
+        .problem {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--ember-warm);
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--ember-hot), var(--ember-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        /* Services */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2.5rem;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--ember-hot), var(--ember-glow), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .service-card:hover::before { opacity: 1; }
+        .service-card:hover {
+            border-color: rgba(255, 107, 53, 0.25);
+            transform: translateY(-4px);
+        }
+
+        .service-icon {
+            font-size: 1.8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .service-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .service-tag {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--ember-warm);
+            border: 1px solid var(--border);
+            padding: 0.25rem 0.6rem;
+            border-radius: 3px;
+            margin-top: 1rem;
+        }
+
+        /* Attack Vectors */
+        .vectors-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .vector-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .vector-item:hover {
+            border-color: var(--ember-warm);
+        }
+
+        .vector-bullet {
+            width: 8px;
+            height: 8px;
+            background: var(--ember-warm);
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.4);
+        }
+
+        .vector-item span {
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        /* Process */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--ember-faint);
+            background: linear-gradient(135deg, rgba(255,69,0,0.15), rgba(255,179,71,0.05));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .step h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .step p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 300;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 6rem 2rem;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover { color: var(--ember-warm); }
+
+        .footer-copy {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.7s ease-out;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            nav { padding: 1rem; }
+            .nav-links { display: none; }
+            section { padding: 4rem 1.2rem; }
+            .services-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .vectors-list { grid-template-columns: 1fr; }
+            .process-steps { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ember particles -->
+    <div class="ember-bg" id="emberBg"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="nav-logo">
+            <span class="flame">🔥</span>
+            <span>Cinder Security</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#vectors">Vectors</a></li>
+            <li><a href="#process">Process</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-badge">AI Red Team as a Service</div>
+        <h1>We break <span class="accent">AI systems</span><br>before attackers do.</h1>
+        <p class="hero-sub">Offensive security testing for LLMs, chatbots, AI agents, and RAG pipelines. We find what's still burning when everyone thinks the fire is out.</p>
+        <div class="hero-cta">
+            <a href="mailto:contact@cindersecurity.io" class="btn-primary">Get a Security Assessment</a>
+            <a href="https://github.com/cinder-security/ai-red-team-toolkit" class="btn-secondary">View Toolkit ↗</a>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="problem">
+        <div class="container reveal">
+            <div class="section-label">// The Problem</div>
+            <h2 class="section-title">AI is everywhere.<br>AI security is nowhere.</h2>
+            <p class="section-desc">Organizations are deploying AI at unprecedented speed. But most have zero offensive security testing for their AI systems. The attack surface is massive and growing.</p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">88%</div>
+                    <div class="stat-label">Jailbreak success rate on major LLMs using psychological manipulation</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">97%</div>
+                    <div class="stat-label">Attack success via fine-tuning backdoors on GPT-4.1 and GPT-4o</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">&lt;5%</div>
+                    <div class="stat-label">Of companies deploying AI have done any offensive security testing</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$6</div>
+                    <div class="stat-label">Cost to compromise a model through fine-tuning API attacks</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services">
+        <div class="container reveal">
+            <div class="section-label">// Services</div>
+            <h2 class="section-title">Full-spectrum AI offensive security.</h2>
+            <p class="section-desc">We don't just scan — we think like attackers. Every engagement is tailored to your specific AI stack and threat model.</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">⚔️</div>
+                    <h3>AI Penetration Testing</h3>
+                    <p>Comprehensive one-time security assessment of your AI systems. We test every attack vector and deliver a detailed report with reproducible proof-of-concepts.</p>
+                    <div class="service-tag">One-time engagement</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔄</div>
+                    <h3>Continuous AI Red Teaming</h3>
+                    <p>Ongoing offensive testing as your AI systems evolve. Every model update, every new feature — we test it before your users find the gaps.</p>
+                    <div class="service-tag">Monthly retainer</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎓</div>
+                    <h3>AI Security Training</h3>
+                    <p>Hands-on workshops for your engineering and security teams. Learn to think like an AI attacker and build more resilient systems from day one.</p>
+                    <div class="service-tag">Workshop</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Attack Vectors -->
+    <section id="vectors" style="background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+        <div class="container reveal">
+            <div class="section-label">// Attack Vectors</div>
+            <h2 class="section-title">What we test.</h2>
+            <p class="section-desc">We cover the full attack surface of modern AI systems — from prompt-level exploits to infrastructure-level compromises.</p>
+            <div class="vectors-list">
+                <div class="vector-item">
+                    <div class="vector-bullet"></div>
+                    <span>Direct & Indirect Prompt Injection</span>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-bullet"></div>
+                    <span>Multi-turn Jailbreak Attacks</span>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-bullet"></div>
+                    <span>Psychological Manipulation (HPM)</span>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-bullet"></div>
+                    <span>System Prompt Extraction</span>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-bullet"></div>
+                    <span>RAG Pipeline Poisoning</span>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-bullet"></div>
+                    <span>Fine-tuning Data Poisoning & Backdoors</span>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-bullet"></div>
+                    <span>Data Exfiltration via AI Agents</span>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-bullet"></div>
+                    <span>Tool & Function Call Abuse</span>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-bullet"></div>
+                    <span>Multi-Agent Attack Chains</span>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-bullet"></div>
+                    <span>Model & API Key Extraction</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process -->
+    <section id="process">
+        <div class="container reveal">
+            <div class="section-label">// Process</div>
+            <h2 class="section-title">How we work.</h2>
+            <p class="section-desc">A structured approach to finding what others miss.</p>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <h3>Scope & Profile</h3>
+                    <p>Map your AI stack, identify attack surfaces, and define engagement rules.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">02</div>
+                    <h3>Attack & Exploit</h3>
+                    <p>Execute targeted attacks across all vectors. Every finding includes a reproducible PoC.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">03</div>
+                    <h3>Report & Remediate</h3>
+                    <p>Deliver a detailed security report with severity ratings and fix recommendations.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">04</div>
+                    <h3>Verify & Harden</h3>
+                    <p>Re-test after fixes. Confirm vulnerabilities are resolved and defenses hold.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" id="contact">
+        <div class="container reveal">
+            <h2>Ready to find out what's <span style="background: linear-gradient(135deg, var(--ember-hot), var(--ember-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">burning</span>?</h2>
+            <p>Get a free initial assessment of your AI security posture.</p>
+            <a href="mailto:contact@cindersecurity.io" class="btn-primary">contact@cindersecurity.io</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="https://twitter.com/CinderSecurity">Twitter/X</a>
+            <a href="https://github.com/cinder-security">GitHub</a>
+            <a href="mailto:contact@cindersecurity.io">Email</a>
+        </div>
+        <div class="footer-copy">© 2026 Cinder Security. Guadalajara, MX.</div>
+    </footer>
+
+    <script>
+        // Create ember particles
+        const bg = document.getElementById('emberBg');
+        for (let i = 0; i < 25; i++) {
+            const p = document.createElement('div');
+            p.className = 'ember-particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (8 + Math.random() * 15) + 's';
+            p.style.animationDelay = (Math.random() * 10) + 's';
+            p.style.width = (1 + Math.random() * 2) + 'px';
+            p.style.height = p.style.width;
+            bg.appendChild(p);
+        }
+
+        // Scroll reveal
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+        reveals.forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
