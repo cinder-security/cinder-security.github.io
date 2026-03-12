@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,13 +124,8 @@
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
         }
-        .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
-        .nav-logo img { height: 36px; width: auto; object-fit: contain; }
-        .nav-logo span {
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700; font-size: 0.9rem;
-            color: var(--text-primary); letter-spacing: 2px; text-transform: uppercase;
-        }
+        .nav-logo { display: flex; align-items: center; text-decoration: none; }
+        .nav-logo img { height: 42px; width: auto; object-fit: contain; }
         .nav-links { display: flex; gap: 2rem; list-style: none; }
         .nav-links a {
             color: var(--text-secondary); text-decoration: none;
@@ -371,8 +365,7 @@
 <!-- NAV -->
 <nav>
     <a href="#" class="nav-logo">
-        <img src="RRRR.png" alt="Cinder Security Logo">
-        <span>Cinder Security</span>
+        <img src="logo.png" alt="Cinder Security">
     </a>
     <ul class="nav-links">
         <li><a href="#findings">Research</a></li>
@@ -385,7 +378,7 @@
 
 <!-- HERO -->
 <section class="hero">
-    <img src="RRRR.png" alt="Cinder Security" class="hero-logo">
+    <img src="logo.png" alt="Cinder Security" class="hero-logo">
     <div class="hero-badge">AI Red Team as a Service</div>
     <h1>We break <span class="accent">AI systems</span><br>before attackers do.</h1>
     <p class="hero-sub">Offensive security testing for LLMs, chatbots, AI agents, and RAG pipelines. We find what's still burning when everyone thinks the fire is out.</p>
