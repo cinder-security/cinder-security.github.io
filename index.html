@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,7 +126,12 @@
             border-bottom: 1px solid var(--border);
         }
         .nav-logo { display: flex; align-items: center; text-decoration: none; }
-        .nav-logo img { height: 42px; width: auto; object-fit: contain; }
+        .nav-logo span {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700; font-size: 0.88rem;
+            color: var(--text-primary); letter-spacing: 3px; text-transform: uppercase;
+        }
+        .nav-logo .logo-dot { color: var(--ember-hot); }
         .nav-links { display: flex; gap: 2rem; list-style: none; }
         .nav-links a {
             color: var(--text-secondary); text-decoration: none;
@@ -365,7 +371,7 @@
 <!-- NAV -->
 <nav>
     <a href="#" class="nav-logo">
-        <img src="logo.png" alt="Cinder Security">
+        <span>CINDER<span class="logo-dot">.</span>SECURITY</span>
     </a>
     <ul class="nav-links">
         <li><a href="#findings">Research</a></li>
@@ -486,7 +492,7 @@
                     <span class="severity-badge severity-high">High — CVSS 7.6</span>
                     <span class="finding-status">✓ Public advisory</span>
                 </div>
-                <a href="https://github.com/advisories/GHSA-4fpw-hjmg-x4qr" target="_blank" class="finding-advisory">GHSA-4fpw-hjmg-x4qr ↗</a>
+                <a href="https://github.com/langchain-ai/langchain/security/advisories/GHSA-4fpw-hjmg-x4qr" target="_blank" class="finding-advisory">GHSA-4fpw-hjmg-x4qr ↗</a>
             </div>
 
         </div>
