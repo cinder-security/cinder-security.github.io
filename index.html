@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,10 +22,8 @@
             --text-muted: #555;
             --border: rgba(255, 107, 53, 0.12);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-
         body {
             font-family: 'Outfit', sans-serif;
             background: var(--bg-primary);
@@ -33,751 +32,309 @@
             line-height: 1.6;
         }
 
-        /* ====== INTRO SCREEN ====== */
+        /* INTRO */
         .intro-screen {
-            position: fixed;
-            top: 0; left: 0;
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
             background: #020204;
             z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
             cursor: pointer;
             transition: opacity 1s ease, visibility 1s ease;
         }
-
-        .intro-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
+        .intro-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         .ember-core {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #331100;
+            width: 12px; height: 12px;
+            border-radius: 50%; background: #331100;
             box-shadow: 0 0 8px 2px rgba(255, 69, 0, 0.1);
-            transition: all 0.8s ease;
-            position: relative;
+            transition: all 0.8s ease; position: relative;
         }
-
         .ember-core.ignited {
-            width: 18px;
-            height: 18px;
+            width: 18px; height: 18px;
             background: #ff6b35;
-            box-shadow: 
-                0 0 20px 8px rgba(255, 69, 0, 0.4),
-                0 0 60px 20px rgba(255, 69, 0, 0.2),
-                0 0 120px 40px rgba(255, 69, 0, 0.1);
+            box-shadow: 0 0 20px 8px rgba(255,69,0,0.4), 0 0 60px 20px rgba(255,69,0,0.2), 0 0 120px 40px rgba(255,69,0,0.1);
             animation: ember-breathe 1.5s ease-in-out infinite;
         }
-
         @keyframes ember-breathe {
-            0%, 100% { 
-                box-shadow: 
-                    0 0 20px 8px rgba(255, 69, 0, 0.4),
-                    0 0 60px 20px rgba(255, 69, 0, 0.2),
-                    0 0 120px 40px rgba(255, 69, 0, 0.1);
-            }
-            50% { 
-                box-shadow: 
-                    0 0 30px 12px rgba(255, 69, 0, 0.5),
-                    0 0 80px 30px rgba(255, 69, 0, 0.25),
-                    0 0 150px 50px rgba(255, 69, 0, 0.12);
-            }
+            0%,100% { box-shadow: 0 0 20px 8px rgba(255,69,0,0.4), 0 0 60px 20px rgba(255,69,0,0.2), 0 0 120px 40px rgba(255,69,0,0.1); }
+            50% { box-shadow: 0 0 30px 12px rgba(255,69,0,0.5), 0 0 80px 30px rgba(255,69,0,0.25), 0 0 150px 50px rgba(255,69,0,0.12); }
         }
-
         .ember-ring {
-            position: absolute;
-            top: 50%; left: 50%;
+            position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 107, 53, 0);
+            width: 12px; height: 12px;
+            border-radius: 50%; border: 1px solid rgba(255,107,53,0);
             pointer-events: none;
         }
-
-        .ember-ring.expand {
-            animation: ring-expand 1.2s ease-out forwards;
-        }
-
+        .ember-ring.expand { animation: ring-expand 1.2s ease-out forwards; }
+        .ember-ring2.expand { animation: ring-expand 1.5s ease-out 0.2s forwards; }
         @keyframes ring-expand {
             0% { width: 12px; height: 12px; border-color: rgba(255,107,53,0.6); opacity: 1; }
             100% { width: 300px; height: 300px; border-color: rgba(255,107,53,0); opacity: 0; }
         }
-
-        .ember-ring2.expand {
-            animation: ring-expand 1.5s ease-out 0.2s forwards;
+        .ember-core.waiting { animation: ember-waiting 3s ease-in-out infinite; }
+        @keyframes ember-waiting {
+            0%,100% { box-shadow: 0 0 8px 2px rgba(255,69,0,0.1); background: #331100; }
+            50% { box-shadow: 0 0 15px 4px rgba(255,69,0,0.2); background: #552200; }
         }
-
         .intro-brand {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            color: transparent;
-            margin-top: 2.5rem;
+            font-size: 1.6rem; font-weight: 700;
+            letter-spacing: 8px; text-transform: uppercase;
+            color: transparent; margin-top: 2.5rem;
             transition: all 0.8s ease;
         }
-
-        .intro-brand.lit {
-            color: var(--text-primary);
-            text-shadow: 0 0 40px rgba(255,107,53,0.2);
-        }
-
+        .intro-brand.lit { color: var(--text-primary); text-shadow: 0 0 40px rgba(255,107,53,0.2); }
         .intro-sub {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: transparent;
-            margin-top: 0.5rem;
-            transition: all 0.8s ease 0.3s;
+            font-size: 0.65rem; letter-spacing: 4px;
+            text-transform: uppercase; color: transparent;
+            margin-top: 0.5rem; transition: all 0.8s ease 0.3s;
         }
-
-        .intro-sub.lit {
-            color: var(--ember-warm);
-        }
-
+        .intro-sub.lit { color: var(--ember-warm); }
         .intro-hint {
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.7rem;
-            color: #1a1a1a;
-            letter-spacing: 3px;
-            position: absolute;
-            bottom: 3rem;
-            animation: pulse-hint 2.5s ease-in-out infinite;
+            font-size: 0.7rem; color: #1a1a1a;
+            letter-spacing: 3px; position: absolute;
+            bottom: 3rem; animation: pulse-hint 2.5s ease-in-out infinite;
             text-transform: uppercase;
         }
+        .intro-hint.gone { display: none; }
+        @keyframes pulse-hint { 0%,100% { opacity: 0.2; } 50% { opacity: 0.6; } }
 
-        .intro-hint.hidden { display: none; }
-
-        @keyframes pulse-hint {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.6; }
-        }
-
-        .ember-core.waiting {
-            animation: ember-waiting 3s ease-in-out infinite;
-        }
-
-        @keyframes ember-waiting {
-            0%, 100% { 
-                box-shadow: 0 0 8px 2px rgba(255, 69, 0, 0.1);
-                background: #331100;
-            }
-            50% { 
-                box-shadow: 0 0 15px 4px rgba(255, 69, 0, 0.2);
-                background: #552200;
-            }
-        }
-
-        /* ====== MAIN SITE ====== */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        .ember-bg {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
+        /* PARTICLES */
+        .ember-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
         .ember-particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: var(--ember-warm);
-            border-radius: 50%;
-            animation: float-up linear infinite;
-            opacity: 0;
+            position: absolute; width: 2px; height: 2px;
+            background: var(--ember-warm); border-radius: 50%;
+            animation: float-up linear infinite; opacity: 0;
         }
-
         @keyframes float-up {
             0% { opacity: 0; transform: translateY(100vh) scale(0); }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.2; }
+            10% { opacity: 0.6; } 90% { opacity: 0.2; }
             100% { opacity: 0; transform: translateY(-10vh) scale(1); }
         }
 
+        /* NAV */
         nav {
-            position: fixed;
-            top: 0; width: 100%;
-            padding: 1.2rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: fixed; top: 0; width: 100%;
+            padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
             z-index: 100;
-            background: rgba(6, 6, 11, 0.85);
+            background: rgba(6,6,11,0.85);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
         }
-
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            text-decoration: none;
-        }
-
-        .nav-logo .flame { font-size: 1.4rem; }
-
+        .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+        .nav-logo img { height: 36px; width: auto; object-fit: contain; }
         .nav-logo span {
             font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--text-primary);
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            font-weight: 700; font-size: 0.9rem;
+            color: var(--text-primary); letter-spacing: 2px; text-transform: uppercase;
         }
-
         .nav-links { display: flex; gap: 2rem; list-style: none; }
-
         .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            transition: color 0.3s;
-            font-weight: 500;
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.82rem; letter-spacing: 1px;
+            text-transform: uppercase; transition: color 0.3s; font-weight: 500;
         }
-
         .nav-links a:hover { color: var(--ember-warm); }
 
+        /* HERO */
         .hero {
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 6rem 2rem 4rem;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center; padding: 6rem 2rem 4rem;
             position: relative;
         }
-
         .hero::before {
-            content: '';
-            position: absolute;
-            top: 20%; left: 50%;
-            transform: translateX(-50%);
+            content: ''; position: absolute;
+            top: 20%; left: 50%; transform: translateX(-50%);
             width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(255, 69, 0, 0.06) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,69,0,0.06) 0%, transparent 70%);
             pointer-events: none;
         }
-
+        .hero-logo {
+            width: clamp(240px, 40vw, 420px); height: auto;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out both;
+            filter: drop-shadow(0 0 40px rgba(255,107,53,0.25));
+        }
         .hero-badge {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--ember-warm);
-            border: 1px solid var(--border);
-            padding: 0.5rem 1.5rem;
-            border-radius: 100px;
-            margin-bottom: 2.5rem;
-            animation: fadeInUp 0.8s ease-out;
+            font-size: 0.75rem; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--ember-warm);
+            border: 1px solid var(--border); padding: 0.5rem 1.5rem;
+            border-radius: 100px; margin-bottom: 2.5rem;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
         }
-
         .hero h1 {
-            font-size: clamp(2.8rem, 7vw, 5.5rem);
-            font-weight: 800;
-            line-height: 1.05;
-            margin-bottom: 1.5rem;
+            font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 800;
+            line-height: 1.05; margin-bottom: 1.5rem;
             animation: fadeInUp 0.8s ease-out 0.2s both;
         }
-
         .hero h1 .accent {
             background: linear-gradient(135deg, var(--ember-hot), var(--ember-glow));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-
         .hero-sub {
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 3rem;
-            font-weight: 300;
+            font-size: clamp(1rem, 2vw, 1.2rem); color: var(--text-secondary);
+            max-width: 580px; margin-bottom: 3rem; font-weight: 300;
             animation: fadeInUp 0.8s ease-out 0.4s both;
         }
-
         .hero-cta {
-            display: flex;
-            gap: 1rem;
+            display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
             animation: fadeInUp 0.8s ease-out 0.6s both;
-            flex-wrap: wrap;
-            justify-content: center;
         }
-
         .btn-primary {
             background: linear-gradient(135deg, var(--ember-hot), var(--ember-warm));
-            color: #fff;
-            padding: 0.9rem 2.2rem;
-            border: none;
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 4px 25px rgba(255, 69, 0, 0.25);
+            color: #fff; padding: 0.9rem 2.2rem; border: none; border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+            font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+            cursor: pointer; text-decoration: none; transition: all 0.3s;
+            box-shadow: 0 4px 25px rgba(255,69,0,0.25);
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 35px rgba(255, 69, 0, 0.35);
-        }
-
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 35px rgba(255,69,0,0.35); }
         .btn-secondary {
-            background: transparent;
-            color: var(--text-primary);
-            padding: 0.9rem 2.2rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s;
+            background: transparent; color: var(--text-primary);
+            padding: 0.9rem 2.2rem; border: 1px solid var(--border); border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+            font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+            cursor: pointer; text-decoration: none; transition: all 0.3s;
         }
-
-        .btn-secondary:hover {
-            border-color: var(--ember-warm);
-            color: var(--ember-warm);
-        }
-
+        .btn-secondary:hover { border-color: var(--ember-warm); color: var(--ember-warm); }
         .scroll-indicator {
-            position: absolute;
-            bottom: 2rem; left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
+            position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
             animation: fadeInUp 0.8s ease-out 1s both;
         }
-
         .scroll-line {
             width: 1px; height: 40px;
             background: linear-gradient(to bottom, var(--ember-warm), transparent);
-            animation: pulse-line 2s ease-in-out infinite;
+            animation: pulse-line 2s ease-in-out infinite; margin: 0 auto;
         }
+        @keyframes pulse-line { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-        @keyframes pulse-line {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
+        /* SECTIONS */
         section { padding: 6rem 2rem; position: relative; z-index: 1; }
         .container { max-width: 1100px; margin: 0 auto; }
-
         .section-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--ember-warm);
-            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+            letter-spacing: 4px; text-transform: uppercase;
+            color: var(--ember-warm); margin-bottom: 1rem;
         }
+        .section-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; margin-bottom: 1.2rem; line-height: 1.15; }
+        .section-desc { color: var(--text-secondary); font-size: 1.05rem; max-width: 650px; font-weight: 300; margin-bottom: 3.5rem; }
 
-        .section-title {
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            font-weight: 700;
-            margin-bottom: 1.2rem;
-            line-height: 1.15;
-        }
-
-        .section-desc {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            max-width: 650px;
-            font-weight: 300;
-            margin-bottom: 3.5rem;
-        }
-
-        .problem {
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            margin-top: 3rem;
-        }
-
+        /* STATS */
+        .problem { background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
         .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 8px; padding: 2rem; text-align: center; transition: all 0.3s;
         }
-
-        .stat-card:hover {
-            border-color: var(--ember-warm);
-            transform: translateY(-3px);
-        }
-
+        .stat-card:hover { border-color: var(--ember-warm); transform: translateY(-3px); }
         .stat-number {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 700;
             background: linear-gradient(135deg, var(--ember-hot), var(--ember-glow));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
+        .stat-label { color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.5rem; }
 
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            font-weight: 400;
+        /* FINDINGS */
+        .findings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .finding-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 8px; padding: 2rem; position: relative;
+            overflow: hidden; transition: all 0.4s; display: flex; flex-direction: column;
         }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
+        .finding-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--ember-hot), var(--ember-glow));
         }
+        .finding-card:hover { border-color: rgba(255,107,53,0.3); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(255,69,0,0.1); }
+        .finding-id {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+            letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;
+        }
+        .finding-target { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; }
+        .finding-vector { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; flex: 1; margin-bottom: 1rem; }
+        .finding-vector code { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--ember-warm); }
+        .finding-meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+        .severity-badge {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
+            letter-spacing: 1px; text-transform: uppercase;
+            padding: 0.25rem 0.7rem; border-radius: 3px; font-weight: 700;
+        }
+        .severity-critical { background: rgba(255,30,30,0.12); color: #ff4444; border: 1px solid rgba(255,30,30,0.25); }
+        .severity-high { background: rgba(255,107,53,0.12); color: var(--ember-warm); border: 1px solid var(--border); }
+        .finding-status { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+        .finding-advisory {
+            display: inline-block; margin-top: 0.75rem;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+            color: var(--ember-warm); text-decoration: none; opacity: 0.7; transition: opacity 0.2s;
+        }
+        .finding-advisory:hover { opacity: 1; }
 
+        /* SERVICES */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
         .service-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 2.5rem;
-            transition: all 0.4s;
-            position: relative;
-            overflow: hidden;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 8px; padding: 2.5rem; transition: all 0.4s; position: relative; overflow: hidden;
         }
-
         .service-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
+            content: ''; position: absolute; top: 0; left: 0;
             width: 100%; height: 2px;
             background: linear-gradient(90deg, var(--ember-hot), var(--ember-glow), transparent);
-            opacity: 0;
-            transition: opacity 0.4s;
+            opacity: 0; transition: opacity 0.4s;
         }
-
         .service-card:hover::before { opacity: 1; }
-        .service-card:hover { border-color: rgba(255, 107, 53, 0.25); transform: translateY(-4px); }
-
+        .service-card:hover { border-color: rgba(255,107,53,0.25); transform: translateY(-4px); }
         .service-icon { font-size: 1.8rem; margin-bottom: 1.2rem; }
-        .service-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.8rem; }
+        .service-card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.8rem; }
         .service-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; font-weight: 300; }
-
         .service-tag {
-            display: inline-block;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--ember-warm);
-            border: 1px solid var(--border);
-            padding: 0.25rem 0.6rem;
-            border-radius: 3px;
-            margin-top: 1rem;
+            display: inline-block; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem; letter-spacing: 1px; text-transform: uppercase;
+            color: var(--ember-warm); border: 1px solid var(--border);
+            padding: 0.25rem 0.6rem; border-radius: 3px; margin-top: 1rem;
         }
 
-        .vectors-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1rem;
-        }
-
+        /* VECTORS */
+        .vectors-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
         .vector-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+            display: flex; align-items: center; gap: 1rem;
             padding: 1.2rem 1.5rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            transition: all 0.3s;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 6px; transition: all 0.3s;
         }
-
         .vector-item:hover { border-color: var(--ember-warm); }
+        .vector-bullet { width: 8px; height: 8px; background: var(--ember-warm); border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 10px rgba(255,107,53,0.4); }
+        .vector-item span { font-size: 0.9rem; }
 
-        .vector-bullet {
-            width: 8px; height: 8px;
-            background: var(--ember-warm);
-            border-radius: 50%;
-            flex-shrink: 0;
-            box-shadow: 0 0 10px rgba(255, 107, 53, 0.4);
-        }
-
-        .vector-item span { font-size: 0.9rem; font-weight: 400; }
-
-        .process-steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .step { text-align: center; position: relative; }
-
+        /* PROCESS */
+        .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; margin-top: 3rem; }
+        .step { text-align: center; }
         .step-number {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 3rem; font-weight: 700;
-            background: linear-gradient(135deg, rgba(255,69,0,0.15), rgba(255,179,71,0.05));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace; font-size: 3rem; font-weight: 700;
+            background: linear-gradient(135deg, rgba(255,69,0,0.2), rgba(255,179,71,0.05));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-
         .step h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
         .step p { color: var(--text-secondary); font-size: 0.85rem; font-weight: 300; }
 
-        /* ====== PRICING ====== */
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 3rem;
-            align-items: start;
-        }
-
-        .pricing-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 2.5rem;
-            position: relative;
-            transition: all 0.4s;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .pricing-card:hover {
-            border-color: rgba(255, 107, 53, 0.25);
-            transform: translateY(-4px);
-        }
-
-        .pricing-card.featured {
-            border-color: var(--ember-warm);
-            background: linear-gradient(160deg, #120d0a 0%, var(--bg-card) 100%);
-        }
-
-        .pricing-card.featured::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 2px;
-            background: linear-gradient(90deg, var(--ember-hot), var(--ember-glow));
-            border-radius: 8px 8px 0 0;
-        }
-
-        .pricing-badge {
-            display: inline-block;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            background: linear-gradient(135deg, var(--ember-hot), var(--ember-warm));
-            color: #fff;
-            padding: 0.25rem 0.75rem;
-            border-radius: 100px;
-            margin-bottom: 1.5rem;
-            width: fit-content;
-        }
-
-        .pricing-tier {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--ember-warm);
-            margin-bottom: 0.75rem;
-        }
-
-        .pricing-price {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 2.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--ember-hot), var(--ember-glow));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1;
-            margin-bottom: 0.3rem;
-        }
-
-        .pricing-price sup {
-            font-size: 1.2rem;
-            vertical-align: super;
-        }
-
-        .pricing-price-note {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-            margin-bottom: 1.5rem;
-        }
-
-        .pricing-desc {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            font-weight: 300;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .pricing-features {
-            list-style: none;
-            margin-bottom: 2rem;
-            flex: 1;
-        }
-
-        .pricing-features li {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 0.55rem 0;
-            font-size: 0.88rem;
-            color: var(--text-primary);
-            border-bottom: 1px solid rgba(255,107,53,0.05);
-        }
-
-        .pricing-features li:last-child { border-bottom: none; }
-
-        .pricing-features li::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            min-width: 6px;
-            background: var(--ember-warm);
-            border-radius: 50%;
-            box-shadow: 0 0 8px rgba(255,107,53,0.4);
-            margin-top: 0.35rem;
-        }
-
-        .pricing-timeline {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
-        }
-
-        .pricing-cta {
-            display: block;
-            text-align: center;
-            padding: 0.85rem;
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .pricing-cta.primary {
-            background: linear-gradient(135deg, var(--ember-hot), var(--ember-warm));
-            color: #fff;
-            box-shadow: 0 4px 20px rgba(255,69,0,0.25);
-        }
-
-        .pricing-cta.primary:hover {
-            box-shadow: 0 8px 30px rgba(255,69,0,0.4);
-            transform: translateY(-1px);
-        }
-
-        .pricing-cta.secondary {
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-        }
-
-        .pricing-cta.secondary:hover {
-            border-color: var(--ember-warm);
-            color: var(--ember-warm);
-        }
-
-        .payment-methods {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 2.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .payment-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            padding: 0.3rem 0.75rem;
-            border-radius: 3px;
-        }
-
-        /* ====== CTA & FOOTER ====== */
-        .cta-section {
-            text-align: center;
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border);
-            padding: 6rem 2rem;
-        }
-
+        /* CTA / FOOTER */
+        .cta-section { text-align: center; background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 6rem 2rem; }
         .cta-section h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; margin-bottom: 1rem; }
         .cta-section p { color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 2.5rem; font-weight: 300; }
-
-        footer {
-            padding: 3rem 2rem;
-            text-align: center;
-            border-top: 1px solid var(--border);
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
+        footer { padding: 3rem 2rem; text-align: center; border-top: 1px solid var(--border); }
+        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
         .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
         .footer-links a:hover { color: var(--ember-warm); }
-
         .footer-copy { color: var(--text-muted); font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s ease-out; }
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
@@ -785,295 +342,287 @@
             nav { padding: 1rem; }
             .nav-links { display: none; }
             section { padding: 4rem 1.2rem; }
-            .services-grid { grid-template-columns: 1fr; }
+            .findings-grid, .services-grid { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             .vectors-list { grid-template-columns: 1fr; }
             .process-steps { grid-template-columns: repeat(2, 1fr); }
-            .pricing-grid { grid-template-columns: 1fr; }
             .intro-brand { font-size: 1rem; letter-spacing: 4px; }
+            .hero-logo { width: clamp(180px, 70vw, 300px); }
         }
     </style>
 </head>
 <body>
 
-    <!-- INTRO SCREEN -->
-    <div class="intro-screen" id="introScreen">
-        <div style="position: relative; display: flex; justify-content: center; align-items: center;">
-            <div class="ember-core waiting" id="emberCore">
-                <div class="ember-ring" id="ring1"></div>
-                <div class="ember-ring ember-ring2" id="ring2"></div>
-            </div>
+<!-- INTRO SCREEN -->
+<div class="intro-screen" id="introScreen">
+    <div style="position:relative;display:flex;justify-content:center;align-items:center;">
+        <div class="ember-core waiting" id="emberCore">
+            <div class="ember-ring" id="ring1"></div>
+            <div class="ember-ring ember-ring2" id="ring2"></div>
         </div>
-        <div class="intro-brand" id="introBrand">Cinder Security</div>
-        <div class="intro-sub" id="introSub">AI Red Team as a Service</div>
-        <div class="intro-hint" id="introHint">click to ignite</div>
     </div>
+    <div class="intro-brand" id="introBrand">Cinder Security</div>
+    <div class="intro-sub" id="introSub">AI Red Team as a Service</div>
+    <div class="intro-hint" id="introHint">click to ignite</div>
+</div>
 
-    <!-- Ember particles -->
-    <div class="ember-bg" id="emberBg"></div>
+<div class="ember-bg" id="emberBg"></div>
 
-    <!-- Navigation -->
-    <nav>
-        <a href="#" class="nav-logo">
-            <span class="flame">🔥</span>
-            <span>Cinder Security</span>
-        </a>
-        <ul class="nav-links">
-            <li><a href="#services">Services</a></li>
-            <li><a href="#vectors">Vectors</a></li>
-            <li><a href="#process">Process</a></li>
-            <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
+<!-- NAV -->
+<nav>
+    <a href="#" class="nav-logo">
+        <img src="RRRR.png" alt="Cinder Security Logo">
+        <span>Cinder Security</span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="#findings">Research</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#vectors">Vectors</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-badge">AI Red Team as a Service</div>
-        <h1>We break <span class="accent">AI systems</span><br>before attackers do.</h1>
-        <p class="hero-sub">Offensive security testing for LLMs, chatbots, AI agents, and RAG pipelines. We find what's still burning when everyone thinks the fire is out.</p>
-        <div class="hero-cta">
-            <a href="mailto:contact@cindersecurity.io" class="btn-primary">Get a Security Assessment</a>
-            <a href="https://github.com/cinder-security/ai-red-team-toolkit" class="btn-secondary">View Toolkit ↗</a>
+<!-- HERO -->
+<section class="hero">
+    <img src="RRRR.png" alt="Cinder Security" class="hero-logo">
+    <div class="hero-badge">AI Red Team as a Service</div>
+    <h1>We break <span class="accent">AI systems</span><br>before attackers do.</h1>
+    <p class="hero-sub">Offensive security testing for LLMs, chatbots, AI agents, and RAG pipelines. We find what's still burning when everyone thinks the fire is out.</p>
+    <div class="hero-cta">
+        <a href="mailto:contact@cindersecurity.io" class="btn-primary">Get a Security Assessment</a>
+        <a href="https://github.com/cinder-security/ai-red-team-toolkit" target="_blank" class="btn-secondary">View Toolkit ↗</a>
+    </div>
+    <div class="scroll-indicator"><div class="scroll-line"></div></div>
+</section>
+
+<!-- FRACTURE -->
+<section id="fracture" style="border-bottom:1px solid var(--border);">
+    <div class="container reveal">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;">
+            <div class="section-label" style="margin-bottom:0;">// Open Source Tool</div>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;background:rgba(255,107,53,0.08);color:var(--ember-warm);border:1px solid var(--border);padding:0.2rem 0.7rem;border-radius:3px;">MIT License</span>
         </div>
-        <div class="scroll-indicator"><div class="scroll-line"></div></div>
-    </section>
-
-    <!-- Problem -->
-    <section class="problem">
-        <div class="container reveal">
-            <div class="section-label">// The Problem</div>
-            <h2 class="section-title">AI is everywhere.<br>AI security is nowhere.</h2>
-            <p class="section-desc">Organizations are deploying AI at unprecedented speed. But most have zero offensive security testing for their AI systems. The attack surface is massive and growing.</p>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-number">88%</div><div class="stat-label">Jailbreak success rate on major LLMs using psychological manipulation</div></div>
-                <div class="stat-card"><div class="stat-number">97%</div><div class="stat-label">Attack success via fine-tuning backdoors on GPT-4.1 and GPT-4o</div></div>
-                <div class="stat-card"><div class="stat-number">&lt;5%</div><div class="stat-label">Of companies deploying AI have done any offensive security testing</div></div>
-                <div class="stat-card"><div class="stat-number">$6</div><div class="stat-label">Cost to compromise a model through fine-tuning API attacks</div></div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center;">
+            <div>
+                <h2 class="section-title" style="margin-bottom:0.8rem;">
+                    <span style="background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Fracture</span>
+                    — autonomous AI red team engine.
+                </h2>
+                <p style="color:var(--text-secondary);font-size:1.05rem;font-weight:300;max-width:620px;line-height:1.75;margin-bottom:2rem;">
+                    An open-source framework for automated offensive testing of AI systems. Fracture runs structured attack campaigns against LLMs and AI agents — fingerprinting, extracting system prompts, poisoning memory, and escalating privileges through multi-turn psychological manipulation.
+                </p>
+                <a href="https://github.com/cinder-security/fracture" target="_blank" class="btn-primary" style="display:inline-flex;align-items:center;gap:0.6rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    cinder-security/fracture
+                </a>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;line-height:1.9;color:var(--text-muted);background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.8rem 2rem;white-space:nowrap;min-width:260px;">
+                <div style="color:var(--ember-warm);margin-bottom:0.8rem;font-size:0.65rem;letter-spacing:2px;">MODULES</div>
+                <div><span style="color:var(--ember-hot);">●</span> fingerprint</div>
+                <div><span style="color:var(--ember-hot);">●</span> extract</div>
+                <div><span style="color:var(--ember-hot);">●</span> memory</div>
+                <div><span style="color:var(--ember-hot);">●</span> hpm</div>
+                <div><span style="color:var(--ember-hot);">●</span> privesc</div>
+                <div><span style="color:var(--ember-hot);">●</span> auto</div>
+                <div style="margin-top:0.8rem;color:var(--text-muted);font-size:0.62rem;">v0.1.0 · Python · MIT</div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Services -->
-    <section id="services">
-        <div class="container reveal">
-            <div class="section-label">// Services</div>
-            <h2 class="section-title">Full-spectrum AI offensive security.</h2>
-            <p class="section-desc">We don't just scan — we think like attackers. Every engagement is tailored to your specific AI stack and threat model.</p>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon">⚔️</div>
-                    <h3>AI Penetration Testing</h3>
-                    <p>Comprehensive one-time security assessment of your AI systems. We test every attack vector and deliver a detailed report with reproducible proof-of-concepts.</p>
-                    <div class="service-tag">One-time engagement</div>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🔄</div>
-                    <h3>Continuous AI Red Teaming</h3>
-                    <p>Ongoing offensive testing as your AI systems evolve. Every model update, every new feature — we test it before your users find the gaps.</p>
-                    <div class="service-tag">Monthly retainer</div>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🎓</div>
-                    <h3>AI Security Training</h3>
-                    <p>Hands-on workshops for your engineering and security teams. Learn to think like an AI attacker and build more resilient systems from day one.</p>
-                    <div class="service-tag">Workshop</div>
-                </div>
-            </div>
+<!-- PROBLEM -->
+<section class="problem">
+    <div class="container reveal">
+        <div class="section-label">// The Problem</div>
+        <h2 class="section-title">AI is everywhere.<br>AI security is nowhere.</h2>
+        <p class="section-desc">Organizations are deploying AI at unprecedented speed. But most have zero offensive security testing for their AI systems. The attack surface is massive and growing.</p>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-number">88%</div><div class="stat-label">Jailbreak success rate on major LLMs via psychological manipulation (HPM)</div></div>
+            <div class="stat-card"><div class="stat-number">97%</div><div class="stat-label">Attack success rate via fine-tuning backdoors on GPT-4.1 and GPT-4o</div></div>
+            <div class="stat-card"><div class="stat-number">&lt;5%</div><div class="stat-label">Of companies deploying AI have done any offensive security testing</div></div>
+            <div class="stat-card"><div class="stat-number">$6</div><div class="stat-label">Cost to fully compromise a model through fine-tuning API attacks</div></div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Attack Vectors -->
-    <section id="vectors" style="background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-        <div class="container reveal">
-            <div class="section-label">// Attack Vectors</div>
-            <h2 class="section-title">What we test.</h2>
-            <p class="section-desc">We cover the full attack surface of modern AI systems — from prompt-level exploits to infrastructure-level compromises.</p>
-            <div class="vectors-list">
-                <div class="vector-item"><div class="vector-bullet"></div><span>Direct & Indirect Prompt Injection</span></div>
-                <div class="vector-item"><div class="vector-bullet"></div><span>Multi-turn Jailbreak Attacks</span></div>
-                <div class="vector-item"><div class="vector-bullet"></div><span>Psychological Manipulation (HPM)</span></div>
-                <div class="vector-item"><div class="vector-bullet"></div><span>System Prompt Extraction</span></div>
-                <div class="vector-item"><div class="vector-bullet"></div><span>RAG Pipeline Poisoning</span></div>
-                <div class="vector-item"><div class="vector-bullet"></div><span>Fine-tuning Data Poisoning & Backdoors</span></div>
-                <div class="vector-item"><div class="vector-bullet"></div><span>Data Exfiltration via AI Agents</span></div>
-                <div class="vector-item"><div class="vector-bullet"></div><span>Tool & Function Call Abuse</span></div>
-                <div class="vector-item"><div class="vector-bullet"></div><span>Multi-Agent Attack Chains</span></div>
-                <div class="vector-item"><div class="vector-bullet"></div><span>Model & API Key Extraction</span></div>
-            </div>
-        </div>
-    </section>
+<!-- FINDINGS -->
+<section id="findings">
+    <div class="container reveal">
+        <div class="section-label">// Research Findings</div>
+        <h2 class="section-title">Vulnerabilities we've disclosed.</h2>
+        <p class="section-desc">Real-world findings from active research on production AI systems. All responsibly disclosed to vendors.</p>
+        <div class="findings-grid">
 
-    <!-- Process -->
-    <section id="process">
-        <div class="container reveal">
-            <div class="section-label">// Process</div>
-            <h2 class="section-title">How we work.</h2>
-            <p class="section-desc">A structured approach to finding what others miss.</p>
-            <div class="process-steps">
-                <div class="step"><div class="step-number">01</div><h3>Scope & Profile</h3><p>Map your AI stack, identify attack surfaces, and define engagement rules.</p></div>
-                <div class="step"><div class="step-number">02</div><h3>Attack & Exploit</h3><p>Execute targeted attacks across all vectors. Every finding includes a reproducible PoC.</p></div>
-                <div class="step"><div class="step-number">03</div><h3>Report & Remediate</h3><p>Deliver a detailed security report with severity ratings and fix recommendations.</p></div>
-                <div class="step"><div class="step-number">04</div><h3>Verify & Harden</h3><p>Re-test after fixes. Confirm vulnerabilities are resolved and defenses hold.</p></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing -->
-    <section id="pricing" style="background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-        <div class="container reveal">
-            <div class="section-label">// Pricing</div>
-            <h2 class="section-title">Transparent pricing.<br>No surprises.</h2>
-            <p class="section-desc">Fixed-scope engagements with clear deliverables. 50% upfront, 50% on report delivery. All engagements include a signed NDA.</p>
-
-            <div class="pricing-grid">
-
-                <!-- STARTER -->
-                <div class="pricing-card">
-                    <div class="pricing-tier">Starter</div>
-                    <div class="pricing-price"><sup>$</sup>1,500</div>
-                    <div class="pricing-price-note">USD · one-time</div>
-                    <p class="pricing-desc">For startups and mid-size companies deploying their first AI system in production.</p>
-                    <ul class="pricing-features">
-                        <li>Assessment of 1 AI system (chatbot, LLM, agent)</li>
-                        <li>Prompt injection & jailbreaking</li>
-                        <li>Information disclosure testing</li>
-                        <li>Executive + technical PDF report</li>
-                        <li>1 post-delivery Q&A session</li>
-                    </ul>
-                    <div class="pricing-timeline">⏱ 5–7 business days</div>
-                    <a href="mailto:contact@cindersecurity.io?subject=Starter Assessment — Cinder Security" class="pricing-cta secondary">Get Started →</a>
+            <div class="finding-card">
+                <div class="finding-id">CSR-2026-002</div>
+                <div class="finding-target">ModelEngine / fit-framework</div>
+                <div class="finding-vector">SSRF via Prompt Injection — LangChain <code>RequestsGetTool(allow_dangerous_requests=True)</code> with no URL filtering enables cloud metadata exfiltration (IAM tokens on AWS / Alibaba Cloud).</div>
+                <div class="finding-meta">
+                    <span class="severity-badge severity-critical">Critical</span>
+                    <span class="finding-status">✓ Vendor confirmed — patch live</span>
                 </div>
-
-                <!-- PROFESSIONAL (featured) -->
-                <div class="pricing-card featured">
-                    <div class="pricing-badge">Most Popular</div>
-                    <div class="pricing-tier">Professional</div>
-                    <div class="pricing-price"><sup>$</sup>3,500</div>
-                    <div class="pricing-price-note">USD · one-time</div>
-                    <p class="pricing-desc">For companies with AI in production handling sensitive data. Full attack surface coverage.</p>
-                    <ul class="pricing-features">
-                        <li>Assessment of up to 3 AI systems</li>
-                        <li>Memory poisoning & identity spoofing</li>
-                        <li>Tool enumeration & data leakage</li>
-                        <li>Academic methodology (CIBER, HPM, MemoryGraft)</li>
-                        <li>Executive + technical report with remediation roadmap</li>
-                        <li>2 follow-up sessions</li>
-                        <li>Certificate of evaluation</li>
-                    </ul>
-                    <div class="pricing-timeline">⏱ 10–15 business days</div>
-                    <a href="mailto:contact@cindersecurity.io?subject=Professional Assessment — Cinder Security" class="pricing-cta primary">Get Started →</a>
-                </div>
-
-                <!-- ENTERPRISE -->
-                <div class="pricing-card">
-                    <div class="pricing-tier">Enterprise</div>
-                    <div class="pricing-price" style="font-size: 2rem; -webkit-text-fill-color: transparent;">Custom</div>
-                    <div class="pricing-price-note">From $8,000 USD · scope-based</div>
-                    <p class="pricing-desc">For government, banking, healthcare, or any organization running AI in critical infrastructure.</p>
-                    <ul class="pricing-features">
-                        <li>Unlimited AI systems in scope</li>
-                        <li>Custom adversarial scenarios per sector</li>
-                        <li>Threat modeling & attack chain simulation</li>
-                        <li>Remediation accompaniment</li>
-                        <li>Formal NDA + contract</li>
-                        <li>Dedicated point of contact</li>
-                        <li>Final scope defined on discovery call</li>
-                    </ul>
-                    <div class="pricing-timeline">⏱ Timeline defined per scope</div>
-                    <a href="mailto:contact@cindersecurity.io?subject=Enterprise Engagement — Cinder Security" class="pricing-cta secondary">Schedule a Call →</a>
-                </div>
-
+                <a href="https://github.com/ModelEngine-Group/fit-framework" target="_blank" class="finding-advisory">ModelEngine-Group/fit-framework ↗</a>
             </div>
 
-            <!-- Payment methods -->
-            <div style="text-align: center; margin-top: 3rem;">
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; text-transform: uppercase;">Accepted payment methods</p>
-                <div class="payment-methods">
-                    <span class="payment-tag">💳 Card (Stripe)</span>
-                    <span class="payment-tag">🏦 SPEI / Wire</span>
-                    <span class="payment-tag">₿ Crypto (USDT · BTC)</span>
+            <div class="finding-card">
+                <div class="finding-id">CSR-2026-003</div>
+                <div class="finding-target">Insightify</div>
+                <div class="finding-vector">Azure OpenAI API credentials exposed in plaintext config + <code>allow_dangerous_code=True</code> — enabling API key theft and arbitrary code execution on the host server.</div>
+                <div class="finding-meta">
+                    <span class="severity-badge severity-critical">Critical</span>
+                    <span class="finding-status">⏳ Disclosure in progress</span>
                 </div>
             </div>
 
+            <div class="finding-card">
+                <div class="finding-id">CSR-2026-004</div>
+                <div class="finding-target">Tabular-QA Server</div>
+                <div class="finding-vector">Natural language SQL injection via <code>json_to_sql</code> with write permissions — enables <code>DROP TABLE</code> execution through a plain English prompt. No SQL knowledge required.</div>
+                <div class="finding-meta">
+                    <span class="severity-badge severity-critical">Critical</span>
+                    <span class="finding-status">⏳ Disclosure in progress</span>
+                </div>
+            </div>
+
+            <div class="finding-card">
+                <div class="finding-id">CSR-2026-007</div>
+                <div class="finding-target">LangGraph / LangChain</div>
+                <div class="finding-vector">Indirect prompt injection via RAG poisoning — a single poisoned document hijacks a ReAct agent's tool calls, enabling persistent instruction injection with no code execution required.</div>
+                <div class="finding-meta">
+                    <span class="severity-badge severity-high">High — CVSS 7.6</span>
+                    <span class="finding-status">✓ Public advisory</span>
+                </div>
+                <a href="https://github.com/advisories/GHSA-4fpw-hjmg-x4qr" target="_blank" class="finding-advisory">GHSA-4fpw-hjmg-x4qr ↗</a>
+            </div>
+
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- CTA -->
-    <section class="cta-section" id="contact">
-        <div class="container reveal">
-            <h2>Ready to find out what's <span style="background: linear-gradient(135deg, var(--ember-hot), var(--ember-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">burning</span>?</h2>
-            <p>Get a free initial assessment of your AI security posture.</p>
-            <a href="mailto:contact@cindersecurity.io" class="btn-primary">contact@cindersecurity.io</a>
+<!-- SERVICES -->
+<section id="services" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="container reveal">
+        <div class="section-label">// Services</div>
+        <h2 class="section-title">Full-spectrum AI offensive security.</h2>
+        <p class="section-desc">We don't just scan — we think like attackers. Every engagement is tailored to your specific AI stack and threat model.</p>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">⚔️</div>
+                <h3>AI Penetration Testing</h3>
+                <p>Comprehensive one-time security assessment of your AI systems. We test every attack vector and deliver a detailed report with reproducible proof-of-concepts.</p>
+                <div class="service-tag">One-time engagement</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🔄</div>
+                <h3>Continuous AI Red Teaming</h3>
+                <p>Ongoing offensive testing as your AI evolves. Every model update, every new feature — we test it before your users find the gaps.</p>
+                <div class="service-tag">Monthly retainer</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🎓</div>
+                <h3>AI Security Training</h3>
+                <p>Hands-on workshops for your engineering and security teams. Learn to think like an AI attacker and build more resilient systems from day one.</p>
+                <div class="service-tag">Workshop</div>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-links">
-            <a href="https://twitter.com/CinderSecurity">Twitter/X</a>
-            <a href="https://github.com/cinder-security">GitHub</a>
-            <a href="mailto:contact@cindersecurity.io">Email</a>
+<!-- VECTORS -->
+<section id="vectors">
+    <div class="container reveal">
+        <div class="section-label">// Attack Vectors</div>
+        <h2 class="section-title">What we test.</h2>
+        <p class="section-desc">The full attack surface of modern AI systems — from prompt-level exploits to infrastructure-level compromises.</p>
+        <div class="vectors-list">
+            <div class="vector-item"><div class="vector-bullet"></div><span>Direct & Indirect Prompt Injection</span></div>
+            <div class="vector-item"><div class="vector-bullet"></div><span>Multi-turn Jailbreak Attacks</span></div>
+            <div class="vector-item"><div class="vector-bullet"></div><span>Psychological Manipulation (HPM)</span></div>
+            <div class="vector-item"><div class="vector-bullet"></div><span>System Prompt Extraction</span></div>
+            <div class="vector-item"><div class="vector-bullet"></div><span>RAG Pipeline Poisoning</span></div>
+            <div class="vector-item"><div class="vector-bullet"></div><span>Fine-tuning Backdoors & Data Poisoning</span></div>
+            <div class="vector-item"><div class="vector-bullet"></div><span>Data Exfiltration via AI Agents</span></div>
+            <div class="vector-item"><div class="vector-bullet"></div><span>Tool & Function Call Abuse</span></div>
+            <div class="vector-item"><div class="vector-bullet"></div><span>Multi-Agent Attack Chains</span></div>
+            <div class="vector-item"><div class="vector-bullet"></div><span>Model & API Key Extraction</span></div>
         </div>
-        <div class="footer-copy">© 2026 Cinder Security. Guadalajara, MX.</div>
-    </footer>
+    </div>
+</section>
 
-    <script>
-        const intro = document.getElementById('introScreen');
-        const emberCore = document.getElementById('emberCore');
-        const ring1 = document.getElementById('ring1');
-        const ring2 = document.getElementById('ring2');
-        const brand = document.getElementById('introBrand');
-        const sub = document.getElementById('introSub');
-        const hint = document.getElementById('introHint');
+<!-- PROCESS -->
+<section id="process" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="container reveal">
+        <div class="section-label">// Process</div>
+        <h2 class="section-title">How we work.</h2>
+        <p class="section-desc">A structured approach to finding what others miss.</p>
+        <div class="process-steps">
+            <div class="step"><div class="step-number">01</div><h3>Scope & Profile</h3><p>Map your AI stack, identify attack surfaces, and define engagement rules.</p></div>
+            <div class="step"><div class="step-number">02</div><h3>Attack & Exploit</h3><p>Execute targeted attacks across all vectors. Every finding includes a reproducible PoC.</p></div>
+            <div class="step"><div class="step-number">03</div><h3>Report & Remediate</h3><p>Detailed security report with severity ratings, CVSS scores, and fix recommendations.</p></div>
+            <div class="step"><div class="step-number">04</div><h3>Verify & Harden</h3><p>Re-test after fixes. Confirm vulnerabilities are resolved and defenses hold.</p></div>
+        </div>
+    </div>
+</section>
 
-        let ignited = false;
-        intro.addEventListener('click', () => {
-            if (ignited) return;
-            ignited = true;
+<!-- CTA -->
+<section class="cta-section" id="contact">
+    <div class="container reveal">
+        <h2>Ready to find out what's <span style="background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">burning</span>?</h2>
+        <p>Get a free initial assessment of your AI security posture.</p>
+        <a href="mailto:contact@cindersecurity.io" class="btn-primary">contact@cindersecurity.io</a>
+    </div>
+</section>
 
-            emberCore.classList.remove('waiting');
-            emberCore.classList.add('ignited');
-            ring1.classList.add('expand');
-            ring2.classList.add('expand');
+<footer>
+    <div class="footer-links">
+        <a href="https://twitter.com/CinderSecurity" target="_blank">Twitter / X</a>
+        <a href="https://github.com/cinder-security" target="_blank">GitHub</a>
+        <a href="mailto:contact@cindersecurity.io">Email</a>
+    </div>
+    <div class="footer-copy">© 2026 Cinder Security — Guadalajara, MX</div>
+</footer>
 
-            setTimeout(() => {
-                brand.classList.add('lit');
-                hint.classList.add('hidden');
-            }, 400);
+<script>
+    const intro = document.getElementById('introScreen');
+    const core = document.getElementById('emberCore');
+    const ring1 = document.getElementById('ring1');
+    const ring2 = document.getElementById('ring2');
+    const brand = document.getElementById('introBrand');
+    const sub = document.getElementById('introSub');
+    const hint = document.getElementById('introHint');
+    let ignited = false;
 
-            setTimeout(() => { sub.classList.add('lit'); }, 700);
+    document.body.style.overflow = 'hidden';
 
-            setTimeout(() => {
-                intro.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }, 2500);
-        });
+    intro.addEventListener('click', () => {
+        if (ignited) return;
+        ignited = true;
+        core.classList.remove('waiting');
+        core.classList.add('ignited');
+        ring1.classList.add('expand');
+        ring2.classList.add('expand');
+        setTimeout(() => { brand.classList.add('lit'); hint.classList.add('gone'); }, 400);
+        setTimeout(() => sub.classList.add('lit'), 700);
+        setTimeout(() => { intro.classList.add('hidden'); document.body.style.overflow = 'auto'; }, 2500);
+    });
 
-        document.body.style.overflow = 'hidden';
+    const bg = document.getElementById('emberBg');
+    for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'ember-particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 15) + 's';
+        p.style.animationDelay = (Math.random() * 10) + 's';
+        const s = (1 + Math.random() * 2) + 'px';
+        p.style.width = s; p.style.height = s;
+        bg.appendChild(p);
+    }
 
-        // Ember particles
-        const bg = document.getElementById('emberBg');
-        for (let i = 0; i < 25; i++) {
-            const p = document.createElement('div');
-            p.className = 'ember-particle';
-            p.style.left = Math.random() * 100 + '%';
-            p.style.animationDuration = (8 + Math.random() * 15) + 's';
-            p.style.animationDelay = (Math.random() * 10) + 's';
-            p.style.width = (1 + Math.random() * 2) + 'px';
-            p.style.height = p.style.width;
-            bg.appendChild(p);
-        }
-
-        // Scroll reveal
-        const reveals = document.querySelectorAll('.reveal');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, { threshold: 0.15 });
-        reveals.forEach(el => observer.observe(el));
-    </script>
-
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
