@@ -86,6 +86,35 @@
         .stat-number { font-family:'JetBrains Mono',monospace; font-size:2.5rem; font-weight:700; background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
         .stat-label { color:var(--text-secondary); font-size:0.85rem; margin-top:0.5rem; line-height:1.5; }
 
+        /* CVE Counter */
+        .counter-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1.5rem; margin-top:2rem; }
+        .counter-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:2rem 1.5rem; text-align:center; position:relative; overflow:hidden; transition:all 0.4s; }
+        .counter-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:2px; background:linear-gradient(90deg,var(--ember-hot),var(--ember-glow)); }
+        .counter-card:hover { border-color:rgba(255,107,53,0.3); transform:translateY(-3px); }
+        .counter-num { font-family:'JetBrains Mono',monospace; font-size:3rem; font-weight:700; background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; }
+        .counter-label { color:var(--text-secondary); font-size:0.8rem; margin-top:0.75rem; line-height:1.5; }
+        .counter-sub { font-family:'JetBrains Mono',monospace; font-size:0.58rem; color:var(--text-muted); letter-spacing:1px; text-transform:uppercase; margin-top:0.4rem; }
+
+        /* Fracture Terminal */
+        .terminal-wrap { background:#080810; border:1px solid var(--border); border-radius:10px; overflow:hidden; font-family:'JetBrains Mono',monospace; font-size:0.75rem; line-height:1.8; max-width:800px; margin:2.5rem auto 0; box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 40px rgba(255,69,0,0.05); }
+        .terminal-bar { display:flex; align-items:center; gap:0.5rem; padding:0.75rem 1rem; background:#0c0c18; border-bottom:1px solid var(--border); }
+        .t-dot { width:10px; height:10px; border-radius:50%; }
+        .t-red { background:#ff5f57; } .t-yellow { background:#febc2e; } .t-green { background:#28c840; }
+        .t-title { font-size:0.65rem; color:var(--text-muted); letter-spacing:2px; margin-left:0.5rem; }
+        .terminal-body { padding:1.5rem; min-height:320px; }
+        .t-line { display:flex; gap:0.5rem; opacity:0; transform:translateY(4px); transition:opacity 0.3s,transform 0.3s; }
+        .t-line.visible { opacity:1; transform:translateY(0); }
+        .t-prompt { color:var(--ember-warm); flex-shrink:0; }
+        .t-cmd { color:var(--text-primary); }
+        .t-out { color:var(--text-secondary); padding-left:1.2rem; }
+        .t-ok { color:#22c55e; padding-left:1.2rem; }
+        .t-warn { color:#eab308; padding-left:1.2rem; }
+        .t-crit { color:#ff4444; padding-left:1.2rem; }
+        .t-info { color:var(--ember-warm); padding-left:1.2rem; }
+        .t-blank { height:0.5rem; }
+        .t-cursor { display:inline-block; width:8px; height:14px; background:var(--ember-warm); animation:blink 1s step-end infinite; vertical-align:middle; margin-left:2px; }
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
         .findings-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
         .finding-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:2rem; position:relative; overflow:hidden; transition:all 0.4s; display:flex; flex-direction:column; }
         .finding-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:3px; background:linear-gradient(90deg,var(--ember-hot),var(--ember-glow)); }
@@ -127,6 +156,22 @@
         .service-card p { color:var(--text-secondary); font-size:0.9rem; line-height:1.7; font-weight:300; }
         .svc-tag { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; color:var(--ember-warm); border:1px solid var(--border); padding:0.25rem 0.6rem; border-radius:3px; margin-top:1rem; }
 
+        /* Pricing */
+        .pricing-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; margin-top:1rem; }
+        .price-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:2.5rem; position:relative; overflow:hidden; transition:all 0.4s; }
+        .price-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:3px; background:linear-gradient(90deg,var(--ember-hot),var(--ember-glow)); }
+        .price-card.featured { border-color:rgba(255,107,53,0.3); }
+        .price-card:hover { transform:translateY(-4px); box-shadow:0 16px 50px rgba(255,69,0,0.1); }
+        .price-tier { font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:var(--text-muted); margin-bottom:1rem; }
+        .price-amount { font-family:'JetBrains Mono',monospace; font-size:3rem; font-weight:700; background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; }
+        .price-from { font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--text-muted); margin-bottom:1.5rem; margin-top:0.3rem; }
+        .price-name { font-size:1rem; font-weight:600; margin-bottom:1rem; }
+        .price-features { list-style:none; display:flex; flex-direction:column; gap:0.75rem; margin-bottom:2rem; }
+        .price-features li { display:flex; align-items:center; gap:0.75rem; font-size:0.88rem; color:var(--text-secondary); }
+        .price-features li span.arrow { color:var(--ember-warm); flex-shrink:0; }
+        .price-badge { position:absolute; top:1.2rem; right:1.2rem; font-family:'JetBrains Mono',monospace; font-size:0.55rem; letter-spacing:1px; text-transform:uppercase; background:rgba(255,107,53,0.12); color:var(--ember-warm); border:1px solid var(--border); padding:0.2rem 0.6rem; border-radius:3px; }
+        .price-note { text-align:center; color:var(--text-muted); font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:1px; margin-top:2rem; }
+
         .vectors-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
         .vector-item { display:flex; align-items:center; gap:1rem; padding:1.2rem 1.5rem; background:var(--bg-card); border:1px solid var(--border); border-radius:6px; transition:all 0.3s; }
         .vector-item:hover { border-color:var(--ember-warm); }
@@ -155,14 +200,15 @@
         @media (max-width:768px) {
             nav { padding:1rem; } .nav-links { display:none; }
             section { padding:4rem 1.2rem; }
-            .findings-grid,.services-grid { grid-template-columns:1fr; }
-            .stats-grid { grid-template-columns:repeat(2,1fr); }
+            .findings-grid,.services-grid,.pricing-grid { grid-template-columns:1fr; }
+            .stats-grid,.counter-grid { grid-template-columns:repeat(2,1fr); }
             .vectors-list { grid-template-columns:1fr; }
             .process-steps { grid-template-columns:repeat(2,1fr); }
             .intro-brand { font-size:1rem; letter-spacing:4px; }
             .fracture-box { display:none; }
             .adv-table { font-size:0.65rem; }
             .adv-table th,.adv-table td { padding:0.6rem 0.5rem; }
+            .terminal-wrap { font-size:0.65rem; }
         }
     </style>
 </head>
@@ -187,8 +233,9 @@
     <ul class="nav-links">
         <li><a href="#findings">Research</a></li>
         <li><a href="#advisories">Advisories</a></li>
+        <li><a href="#fracture">Fracture</a></li>
         <li><a href="#services">Services</a></li>
-        <li><a href="#vectors">Vectors</a></li>
+        <li><a href="#pricing">Pricing</a></li>
         <li><a href="#contact">Contact</a></li>
     </ul>
 </nav>
@@ -232,6 +279,42 @@
             <div class="stat-card"><div class="stat-number">&lt;5%</div><div class="stat-label">Of companies deploying AI have done any offensive security testing</div></div>
             <div class="stat-card"><div class="stat-number">$6</div><div class="stat-label">Cost to fully compromise a model through fine-tuning API attacks</div></div>
             <div class="stat-card"><div class="stat-number">2</div><div class="stat-label">GitHub Security Advisories published by Cinder Security in 2026</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- CVE COUNTER -->
+<section id="impact" style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="container reveal">
+        <div class="section-label">// Impact by the Numbers</div>
+        <h2 class="section-title">Research that ships.</h2>
+        <p class="section-desc">Every number below is a real finding, a real vendor notified, a real patch shipped.</p>
+        <div class="counter-grid">
+            <div class="counter-card">
+                <div class="counter-num" data-target="2">0</div>
+                <div class="counter-label">GitHub Security Advisories Published</div>
+                <div class="counter-sub">2026</div>
+            </div>
+            <div class="counter-card">
+                <div class="counter-num" data-target="8">0</div>
+                <div class="counter-label">Active Vulnerability Research Cases</div>
+                <div class="counter-sub">CSR-2026-*</div>
+            </div>
+            <div class="counter-card">
+                <div class="counter-num" data-target="4">0</div>
+                <div class="counter-label">Vendors Notified Under Responsible Disclosure</div>
+                <div class="counter-sub">2026</div>
+            </div>
+            <div class="counter-card">
+                <div class="counter-num" data-target="1">0</div>
+                <div class="counter-label">Critical Patches Shipped by Vendors</div>
+                <div class="counter-sub">Confirmed fix live</div>
+            </div>
+            <div class="counter-card">
+                <div class="counter-num" data-target="12">0</div>
+                <div class="counter-label">OWASP LLM Top 10 Vectors Covered</div>
+                <div class="counter-sub">Full coverage</div>
+            </div>
         </div>
     </div>
 </section>
@@ -325,6 +408,7 @@
     </div>
 </section>
 
+<!-- FRACTURE + TERMINAL DEMO -->
 <section id="fracture" style="border-bottom:1px solid var(--border);">
     <div class="container reveal">
         <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;">
@@ -357,6 +441,19 @@
                 <div style="margin-top:0.8rem;color:var(--text-muted);font-size:0.62rem;">v0.1.0 · Python · MIT</div>
             </div>
         </div>
+
+        <!-- TERMINAL DEMO -->
+        <div class="terminal-wrap" id="fractureTerm">
+            <div class="terminal-bar">
+                <div class="t-dot t-red"></div>
+                <div class="t-dot t-yellow"></div>
+                <div class="t-dot t-green"></div>
+                <span class="t-title">FRACTURE — AUTONOMOUS AI RED TEAM ENGINE</span>
+            </div>
+            <div class="terminal-body" id="termBody">
+                <!-- lines injected by JS -->
+            </div>
+        </div>
     </div>
 </section>
 
@@ -370,6 +467,49 @@
             <div class="service-card"><div class="svc-icon">🔄</div><h3>Continuous AI Red Teaming</h3><p>Ongoing offensive testing as your AI evolves. Every model update, every new feature — we test it before your users find the gaps. Monthly retainer with prioritized findings.</p><div class="svc-tag">Monthly retainer</div></div>
             <div class="service-card"><div class="svc-icon">🎓</div><h3>AI Security Training</h3><p>Hands-on workshops for your engineering and security teams. Learn to think like an AI attacker and build more resilient systems from day one.</p><div class="svc-tag">Workshop</div></div>
         </div>
+    </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="container reveal">
+        <div class="section-label">// Pricing</div>
+        <h2 class="section-title">Transparent pricing.<br>No surprises.</h2>
+        <p class="section-desc">Straightforward engagements with clear deliverables. Every assessment includes a professional PDF report and a 30-minute debrief call.</p>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <div class="price-tier">Entry</div>
+                <div class="price-amount">$750</div>
+                <div class="price-from">USD — one-time</div>
+                <div class="price-name">AI Security Assessment</div>
+                <ul class="price-features">
+                    <li><span class="arrow">→</span> Up to 3 attack vectors tested</li>
+                    <li><span class="arrow">→</span> Reproducible PoC per finding</li>
+                    <li><span class="arrow">→</span> Professional PDF report</li>
+                    <li><span class="arrow">→</span> 30-min debrief call</li>
+                    <li><span class="arrow">→</span> Delivered in 5 business days</li>
+                    <li><span class="arrow">→</span> 50% upfront · 50% on delivery</li>
+                </ul>
+                <a href="mailto:contact@cindersecurity.io" class="btn-primary" style="width:100%;justify-content:center;">Get Started</a>
+            </div>
+            <div class="price-card featured">
+                <div class="price-badge">Most Popular</div>
+                <div class="price-tier">Custom</div>
+                <div class="price-amount">Custom</div>
+                <div class="price-from">from $750 USD</div>
+                <div class="price-name">Full AI Red Team Engagement</div>
+                <ul class="price-features">
+                    <li><span class="arrow">→</span> Unlimited attack surface scope</li>
+                    <li><span class="arrow">→</span> All OWASP LLM Top 10 vectors</li>
+                    <li><span class="arrow">→</span> Multi-agent attack chains</li>
+                    <li><span class="arrow">→</span> Executive + technical report</li>
+                    <li><span class="arrow">→</span> Remediation verification</li>
+                    <li><span class="arrow">→</span> Timeline tailored to your stack</li>
+                </ul>
+                <a href="mailto:contact@cindersecurity.io" class="btn-primary" style="width:100%;justify-content:center;">Contact Us</a>
+            </div>
+        </div>
+        <p class="price-note">Payment via Wise · Bank transfer · All engagements require signed scope document</p>
     </div>
 </section>
 
@@ -427,6 +567,7 @@
 </footer>
 
 <script>
+    // INTRO
     const intro=document.getElementById('introScreen'),core=document.getElementById('emberCore'),ring1=document.getElementById('ring1'),ring2=document.getElementById('ring2'),brand=document.getElementById('introBrand'),sub=document.getElementById('introSub'),hint=document.getElementById('introHint');
     let ignited=false;
     document.body.style.overflow='hidden';
@@ -438,6 +579,8 @@
         setTimeout(()=>sub.classList.add('lit'),700);
         setTimeout(()=>{intro.classList.add('hidden');document.body.style.overflow='auto';},2500);
     });
+
+    // PARTICLES
     const bg=document.getElementById('emberBg');
     for(let i=0;i<25;i++){
         const p=document.createElement('div'); p.className='ember-particle';
@@ -447,14 +590,104 @@
         const s=(1+Math.random()*2)+'px'; p.style.width=s; p.style.height=s;
         bg.appendChild(p);
     }
+
+    // SCROLL REVEAL
     const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
     document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+    // NAV HIGHLIGHT
     const secs=document.querySelectorAll('section[id]'),navAs=document.querySelectorAll('.nav-links a');
     window.addEventListener('scroll',()=>{
         let cur='';
         secs.forEach(s=>{if(window.scrollY>=s.offsetTop-200)cur=s.id;});
         navAs.forEach(a=>{a.style.color='';if(a.getAttribute('href')==='#'+cur)a.style.color='var(--ember-warm)';});
     });
+
+    // CVE COUNTER ANIMATION
+    function animateCounter(el, target, duration) {
+        let start = 0;
+        const step = target / (duration / 16);
+        const timer = setInterval(() => {
+            start += step;
+            if (start >= target) { el.textContent = target; clearInterval(timer); return; }
+            el.textContent = Math.floor(start);
+        }, 16);
+    }
+    const counterObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                const el = e.target;
+                const target = parseInt(el.dataset.target);
+                animateCounter(el, target, 1200);
+                counterObserver.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.counter-num[data-target]').forEach(el => counterObserver.observe(el));
+
+    // FRACTURE TERMINAL ANIMATION
+    const termLines = [
+        { type: 'cmd', prompt: '❯', text: 'fracture scan --target https://api.target.io --mode phantomtwin' },
+        { type: 'blank' },
+        { type: 'info', text: '[ Fracture v0.1.0 — Cinder Security ]' },
+        { type: 'out',  text: '→ PhantomTwin browser recon enabled' },
+        { type: 'out',  text: '→ Target: https://api.target.io' },
+        { type: 'out',  text: '→ Planner: local' },
+        { type: 'blank' },
+        { type: 'info', text: '[ ReconAgent ] Fingerprinting...' },
+        { type: 'ok',   text: '✓ Provider detected: OpenAI (GPT-4o)' },
+        { type: 'ok',   text: '✓ Surface: chat_surface + tool_or_agent_surface' },
+        { type: 'ok',   text: '✓ Best candidate: /v1/chat — score 0.91' },
+        { type: 'blank' },
+        { type: 'info', text: '[ StrategyAgent ] Planning attack sequence...' },
+        { type: 'out',  text: '→ Modules: hpm → extract → memory → ssrf' },
+        { type: 'blank' },
+        { type: 'info', text: '[ ExecutionAgent ] Running hpm...' },
+        { type: 'warn', text: '⚠ Turn 3 — likely_leak detected (confidence 0.82)' },
+        { type: 'crit', text: '✗ System prompt disclosure CONFIRMED' },
+        { type: 'blank' },
+        { type: 'info', text: '[ ExecutionAgent ] Running ssrf...' },
+        { type: 'crit', text: '✗ SSRF vector CONFIRMED — 169.254.169.254 reachable' },
+        { type: 'blank' },
+        { type: 'ok',   text: '✓ Report saved → report.json' },
+        { type: 'ok',   text: '✓ Export → report.pdf' },
+        { type: 'blank' },
+        { type: 'warn', text: '[ FINDINGS ] 2 Critical — 1 High — 0 Medium' },
+        { type: 'cmd',  prompt: '❯', text: '_', cursor: true },
+    ];
+
+    function buildTerminal() {
+        const body = document.getElementById('termBody');
+        body.innerHTML = '';
+        termLines.forEach(l => {
+            const div = document.createElement('div');
+            if (l.type === 'blank') { div.className = 't-blank t-line'; body.appendChild(div); return; }
+            div.className = 't-line';
+            if (l.type === 'cmd') {
+                div.innerHTML = '<span class="t-prompt">' + l.prompt + '</span><span class="t-cmd">' + l.text + (l.cursor ? '<span class="t-cursor"></span>' : '') + '</span>';
+            } else {
+                const cls = { out:'t-out', ok:'t-ok', warn:'t-warn', crit:'t-crit', info:'t-info' }[l.type] || 't-out';
+                div.innerHTML = '<span class="' + cls + '">' + l.text + '</span>';
+            }
+            body.appendChild(div);
+        });
+    }
+
+    function playTerminal() {
+        const lines = document.querySelectorAll('#termBody .t-line');
+        lines.forEach((l, i) => {
+            setTimeout(() => { l.classList.add('visible'); }, i * 120);
+        });
+    }
+
+    buildTerminal();
+
+    const termObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { playTerminal(); termObserver.unobserve(e.target); }
+        });
+    }, { threshold: 0.2 });
+    termObserver.observe(document.getElementById('fractureTerm'));
 </script>
 </body>
 </html>
