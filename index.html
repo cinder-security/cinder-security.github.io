@@ -4,20 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cinder Security — AI Red Team as a Service</title>
-    <meta name="description" content="We break AI systems before attackers do. Offensive security testing for LLMs, chatbots, AI agents, and RAG pipelines.">
+    <meta name="description" content="We break AI systems before attackers do. Offensive security testing for LLMs, chatbots, AI agents, RAG pipelines, and diffusion models.">
+    <meta name="keywords" content="AI red team, LLM security, AI penetration testing, prompt injection, AI agent security, LATAM cybersecurity">
+    <meta property="og:title" content="Cinder Security — AI Red Team as a Service">
+    <meta property="og:description" content="We break AI systems before attackers do. Offensive security for LLMs, AI agents, and RAG pipelines.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cindersecurity.io">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #06060b; --bg-secondary: #0c0c14; --bg-card: #0f0f1a;
-            --ember-hot: #ff4500; --ember-warm: #ff6b35; --ember-glow: #ffb347;
-            --ember-faint: rgba(255,107,53,0.08); --text-primary: #e8e6e1;
-            --text-secondary: #8a8a8a; --text-muted: #555; --border: rgba(255,107,53,0.12);
+            --bg-primary: #06060b;
+            --bg-secondary: #0c0c14;
+            --bg-card: #0f0f1a;
+            --ember-hot: #ff4500;
+            --ember-warm: #ff6b35;
+            --ember-glow: #ffb347;
+            --ember-faint: rgba(255,107,53,0.08);
+            --text-primary: #e8e6e1;
+            --text-secondary: #8a8a8a;
+            --text-muted: #555;
+            --border: rgba(255,107,53,0.12);
+            --green: #22c55e;
+            --yellow: #eab308;
+            --red: #ff4444;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         html { scroll-behavior:smooth; }
         body { font-family:'Outfit',sans-serif; background:var(--bg-primary); color:var(--text-primary); overflow-x:hidden; line-height:1.6; }
 
+        /* ══════════ INTRO SCREEN ══════════ */
         .intro-screen { position:fixed; top:0; left:0; width:100%; height:100%; background:#020204; z-index:10000; display:flex; flex-direction:column; justify-content:center; align-items:center; cursor:pointer; transition:opacity 1s ease,visibility 1s ease; }
         .intro-screen.hidden { opacity:0; visibility:hidden; pointer-events:none; }
         .ember-core { width:12px; height:12px; border-radius:50%; background:#331100; box-shadow:0 0 8px 2px rgba(255,69,0,0.1); transition:all 0.8s ease; position:relative; }
@@ -37,10 +53,12 @@
         .intro-hint.gone { display:none; }
         @keyframes pulse-hint { 0%,100% { opacity:0.2; } 50% { opacity:0.6; } }
 
+        /* ══════════ PARTICLES ══════════ */
         .ember-bg { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
         .ember-particle { position:absolute; width:2px; height:2px; background:var(--ember-warm); border-radius:50%; animation:float-up linear infinite; opacity:0; }
         @keyframes float-up { 0% { opacity:0; transform:translateY(100vh) scale(0); } 10% { opacity:0.6; } 90% { opacity:0.2; } 100% { opacity:0; transform:translateY(-10vh) scale(1); } }
 
+        /* ══════════ NAV ══════════ */
         nav { position:fixed; top:0; width:100%; padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; z-index:100; background:rgba(6,6,11,0.85); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); }
         .nav-logo { display:flex; align-items:center; text-decoration:none; }
         .nav-logo span { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:0.88rem; color:var(--text-primary); letter-spacing:3px; text-transform:uppercase; }
@@ -48,37 +66,57 @@
         .nav-links { display:flex; gap:2rem; list-style:none; }
         .nav-links a { color:var(--text-secondary); text-decoration:none; font-size:0.82rem; letter-spacing:1px; text-transform:uppercase; transition:color 0.3s; font-weight:500; }
         .nav-links a:hover { color:var(--ember-warm); }
+        .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; z-index:200; background:none; border:none; }
+        .hamburger span { display:block; width:22px; height:2px; background:var(--text-primary); transition:all 0.3s ease; border-radius:1px; }
+        .hamburger.open span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+        .hamburger.open span:nth-child(2) { opacity:0; }
+        .hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+        .mobile-menu { display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background:rgba(6,6,11,0.97); backdrop-filter:blur(30px); z-index:150; flex-direction:column; justify-content:center; align-items:center; gap:2rem; }
+        .mobile-menu.open { display:flex; }
+        .mobile-menu a { color:var(--text-primary); text-decoration:none; font-size:1.2rem; letter-spacing:3px; text-transform:uppercase; font-family:'JetBrains Mono',monospace; transition:color 0.3s; }
+        .mobile-menu a:hover { color:var(--ember-warm); }
 
+        /* ══════════ HERO ══════════ */
         .hero { min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:6rem 2rem 4rem; position:relative; }
         .hero::before { content:''; position:absolute; top:20%; left:50%; transform:translateX(-50%); width:600px; height:600px; background:radial-gradient(circle,rgba(255,69,0,0.06) 0%,transparent 70%); pointer-events:none; }
         .hero-badge { font-family:'JetBrains Mono',monospace; font-size:0.75rem; letter-spacing:3px; text-transform:uppercase; color:var(--ember-warm); border:1px solid var(--border); padding:0.5rem 1.5rem; border-radius:100px; margin-bottom:2.5rem; animation:fadeInUp 0.8s ease-out 0.1s both; }
         .hero h1 { font-size:clamp(2.8rem,7vw,5.5rem); font-weight:800; line-height:1.05; margin-bottom:1.5rem; animation:fadeInUp 0.8s ease-out 0.2s both; }
         .hero h1 .accent { background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        .hero-sub { font-size:clamp(1rem,2vw,1.2rem); color:var(--text-secondary); max-width:580px; margin-bottom:3rem; font-weight:300; animation:fadeInUp 0.8s ease-out 0.4s both; }
+        .hero-sub { font-size:clamp(1rem,2vw,1.2rem); color:var(--text-secondary); max-width:620px; margin-bottom:3rem; font-weight:300; animation:fadeInUp 0.8s ease-out 0.4s both; }
         .hero-cta { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; animation:fadeInUp 0.8s ease-out 0.6s both; }
+        .scroll-indicator { position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); animation:fadeInUp 0.8s ease-out 1s both; }
+        .scroll-line { width:1px; height:40px; background:linear-gradient(to bottom,var(--ember-warm),transparent); animation:pulse-line 2s ease-in-out infinite; margin:0 auto; }
+        @keyframes pulse-line { 0%,100% { opacity:0.3; } 50% { opacity:1; } }
 
+        /* ══════════ PLATFORM BADGES ══════════ */
+        .platform-badges { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; margin-top:2rem; animation:fadeInUp 0.8s ease-out 0.8s both; }
+        .p-badge { font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); border:1px solid rgba(255,255,255,0.06); padding:0.4rem 1rem; border-radius:4px; display:flex; align-items:center; gap:0.5rem; transition:all 0.3s; }
+        .p-badge:hover { border-color:var(--border); color:var(--text-secondary); }
+        .p-badge .p-dot { width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0; }
+
+        /* ══════════ TICKER ══════════ */
         .ticker-wrap { width:100%; overflow:hidden; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-secondary); padding:0.75rem 0; position:relative; z-index:1; }
-        .ticker { display:flex; animation:ticker-scroll 35s linear infinite; white-space:nowrap; }
+        .ticker { display:flex; animation:ticker-scroll 45s linear infinite; white-space:nowrap; }
         .ticker:hover { animation-play-state:paused; }
         @keyframes ticker-scroll { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
         .ticker-item { font-family:'JetBrains Mono',monospace; font-size:0.68rem; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); padding:0 2rem; display:inline-flex; align-items:center; gap:0.5rem; flex-shrink:0; }
         .ticker-item .dot { color:var(--ember-warm); }
         .ticker-item.hi { color:var(--ember-warm); }
 
+        /* ══════════ BUTTONS ══════════ */
         .btn-primary { background:linear-gradient(135deg,var(--ember-hot),var(--ember-warm)); color:#fff; padding:0.9rem 2.2rem; border:none; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:0.82rem; font-weight:600; letter-spacing:1px; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:all 0.3s; box-shadow:0 4px 25px rgba(255,69,0,0.25); display:inline-flex; align-items:center; gap:0.6rem; }
         .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 35px rgba(255,69,0,0.35); }
         .btn-secondary { background:transparent; color:var(--text-primary); padding:0.9rem 2.2rem; border:1px solid var(--border); border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:0.82rem; font-weight:500; letter-spacing:1px; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:all 0.3s; }
         .btn-secondary:hover { border-color:var(--ember-warm); color:var(--ember-warm); }
-        .scroll-indicator { position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); animation:fadeInUp 0.8s ease-out 1s both; }
-        .scroll-line { width:1px; height:40px; background:linear-gradient(to bottom,var(--ember-warm),transparent); animation:pulse-line 2s ease-in-out infinite; margin:0 auto; }
-        @keyframes pulse-line { 0%,100% { opacity:0.3; } 50% { opacity:1; } }
 
+        /* ══════════ SECTIONS ══════════ */
         section { padding:6rem 2rem; position:relative; z-index:1; }
         .container { max-width:1100px; margin:0 auto; }
         .section-label { font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:4px; text-transform:uppercase; color:var(--ember-warm); margin-bottom:1rem; }
         .section-title { font-size:clamp(1.8rem,4vw,2.8rem); font-weight:700; margin-bottom:1.2rem; line-height:1.15; }
         .section-desc { color:var(--text-secondary); font-size:1.05rem; max-width:650px; font-weight:300; margin-bottom:3.5rem; }
 
+        /* ══════════ PROBLEM / STATS ══════════ */
         .problem { background:var(--bg-secondary); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
         .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; margin-top:3rem; }
         .stat-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:2rem; text-align:center; transition:all 0.3s; }
@@ -86,7 +124,7 @@
         .stat-number { font-family:'JetBrains Mono',monospace; font-size:2.5rem; font-weight:700; background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
         .stat-label { color:var(--text-secondary); font-size:0.85rem; margin-top:0.5rem; line-height:1.5; }
 
-        /* CVE Counter */
+        /* ══════════ COUNTER ══════════ */
         .counter-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1.5rem; margin-top:2rem; }
         .counter-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:2rem 1.5rem; text-align:center; position:relative; overflow:hidden; transition:all 0.4s; }
         .counter-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:2px; background:linear-gradient(90deg,var(--ember-hot),var(--ember-glow)); }
@@ -95,7 +133,41 @@
         .counter-label { color:var(--text-secondary); font-size:0.8rem; margin-top:0.75rem; line-height:1.5; }
         .counter-sub { font-family:'JetBrains Mono',monospace; font-size:0.58rem; color:var(--text-muted); letter-spacing:1px; text-transform:uppercase; margin-top:0.4rem; }
 
-        /* Fracture Terminal */
+        /* ══════════ FINDINGS ══════════ */
+        .findings-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
+        .finding-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:2rem; position:relative; overflow:hidden; transition:all 0.4s; display:flex; flex-direction:column; }
+        .finding-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:3px; background:linear-gradient(90deg,var(--ember-hot),var(--ember-glow)); }
+        .finding-card.confirmed::before { background:linear-gradient(90deg,var(--green),#16a34a); }
+        .finding-card:hover { border-color:rgba(255,107,53,0.3); transform:translateY(-4px); box-shadow:0 12px 40px rgba(255,69,0,0.1); }
+        .finding-id { font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:2px; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.5rem; }
+        .finding-target { font-size:1rem; font-weight:700; margin-bottom:0.5rem; }
+        .finding-vector { font-size:0.85rem; color:var(--text-secondary); line-height:1.7; flex:1; margin-bottom:1rem; }
+        .finding-vector code { font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--ember-warm); }
+        .finding-meta { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; }
+        .sev { font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:1px; text-transform:uppercase; padding:0.25rem 0.7rem; border-radius:3px; font-weight:700; }
+        .sev-crit { background:rgba(255,30,30,0.12); color:var(--red); border:1px solid rgba(255,30,30,0.25); }
+        .sev-high { background:rgba(255,107,53,0.12); color:var(--ember-warm); border:1px solid var(--border); }
+        .sev-p2 { background:rgba(234,179,8,0.12); color:var(--yellow); border:1px solid rgba(234,179,8,0.25); }
+        .fstatus { font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:1px; text-transform:uppercase; }
+        .s-ok { color:var(--green); } .s-pend { color:var(--yellow); } .s-dis { color:var(--ember-warm); }
+        .fadv { display:inline-block; margin-top:0.75rem; font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--ember-warm); text-decoration:none; opacity:0.7; transition:opacity 0.2s; border:1px solid var(--border); padding:0.3rem 0.7rem; border-radius:4px; }
+        .fadv:hover { opacity:1; border-color:var(--ember-warm); }
+
+        /* ══════════ ADVISORIES TABLE ══════════ */
+        .adv-table { width:100%; border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:0.78rem; }
+        .adv-table th { text-align:left; padding:0.75rem 1rem; color:var(--ember-warm); font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; border-bottom:1px solid var(--border); }
+        .adv-table td { padding:0.9rem 1rem; border-bottom:1px solid rgba(255,107,53,0.06); color:var(--text-secondary); vertical-align:middle; }
+        .adv-table tr:hover td { background:var(--ember-faint); }
+        .ghsa { color:var(--ember-warm); text-decoration:none; } .ghsa:hover { text-decoration:underline; }
+        .csr-id { color:var(--text-primary); font-weight:700; }
+        .badge { font-size:0.58rem; padding:0.2rem 0.5rem; border-radius:3px; font-weight:700; letter-spacing:0.5px; white-space:nowrap; }
+        .b-live { background:rgba(34,197,94,0.08); color:var(--green); border:1px solid rgba(34,197,94,0.2); }
+        .b-pend { background:rgba(234,179,8,0.08); color:var(--yellow); border:1px solid rgba(234,179,8,0.2); }
+        .b-pub { background:var(--ember-faint); color:var(--ember-warm); border:1px solid var(--border); }
+        .b-p2 { background:rgba(234,179,8,0.08); color:var(--yellow); border:1px solid rgba(234,179,8,0.2); }
+
+        /* ══════════ FRACTURE TERMINAL ══════════ */
+        .fracture-box { font-family:'JetBrains Mono',monospace; font-size:0.72rem; line-height:1.9; color:var(--text-muted); background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:1.8rem 2rem; white-space:nowrap; min-width:260px; }
         .terminal-wrap { background:#080810; border:1px solid var(--border); border-radius:10px; overflow:hidden; font-family:'JetBrains Mono',monospace; font-size:0.75rem; line-height:1.8; max-width:800px; margin:2.5rem auto 0; box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 40px rgba(255,69,0,0.05); }
         .terminal-bar { display:flex; align-items:center; gap:0.5rem; padding:0.75rem 1rem; background:#0c0c18; border-bottom:1px solid var(--border); }
         .t-dot { width:10px; height:10px; border-radius:50%; }
@@ -107,46 +179,16 @@
         .t-prompt { color:var(--ember-warm); flex-shrink:0; }
         .t-cmd { color:var(--text-primary); }
         .t-out { color:var(--text-secondary); padding-left:1.2rem; }
-        .t-ok { color:#22c55e; padding-left:1.2rem; }
-        .t-warn { color:#eab308; padding-left:1.2rem; }
-        .t-crit { color:#ff4444; padding-left:1.2rem; }
+        .t-ok { color:var(--green); padding-left:1.2rem; }
+        .t-warn { color:var(--yellow); padding-left:1.2rem; }
+        .t-crit { color:var(--red); padding-left:1.2rem; }
         .t-info { color:var(--ember-warm); padding-left:1.2rem; }
         .t-blank { height:0.5rem; }
         .t-cursor { display:inline-block; width:8px; height:14px; background:var(--ember-warm); animation:blink 1s step-end infinite; vertical-align:middle; margin-left:2px; }
         @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
 
-        .findings-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
-        .finding-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:2rem; position:relative; overflow:hidden; transition:all 0.4s; display:flex; flex-direction:column; }
-        .finding-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:3px; background:linear-gradient(90deg,var(--ember-hot),var(--ember-glow)); }
-        .finding-card.confirmed::before { background:linear-gradient(90deg,#22c55e,#16a34a); }
-        .finding-card:hover { border-color:rgba(255,107,53,0.3); transform:translateY(-4px); box-shadow:0 12px 40px rgba(255,69,0,0.1); }
-        .finding-id { font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:2px; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.5rem; }
-        .finding-target { font-size:1rem; font-weight:700; margin-bottom:0.5rem; }
-        .finding-vector { font-size:0.85rem; color:var(--text-secondary); line-height:1.7; flex:1; margin-bottom:1rem; }
-        .finding-vector code { font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--ember-warm); }
-        .finding-meta { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; }
-        .sev { font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:1px; text-transform:uppercase; padding:0.25rem 0.7rem; border-radius:3px; font-weight:700; }
-        .sev-crit { background:rgba(255,30,30,0.12); color:#ff4444; border:1px solid rgba(255,30,30,0.25); }
-        .sev-high { background:rgba(255,107,53,0.12); color:var(--ember-warm); border:1px solid var(--border); }
-        .fstatus { font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:1px; text-transform:uppercase; }
-        .s-ok { color:#22c55e; } .s-pend { color:#eab308; } .s-dis { color:var(--ember-warm); }
-        .fadv { display:inline-block; margin-top:0.75rem; font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--ember-warm); text-decoration:none; opacity:0.7; transition:opacity 0.2s; border:1px solid var(--border); padding:0.3rem 0.7rem; border-radius:4px; }
-        .fadv:hover { opacity:1; border-color:var(--ember-warm); }
-
-        .adv-table { width:100%; border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:0.78rem; }
-        .adv-table th { text-align:left; padding:0.75rem 1rem; color:var(--ember-warm); font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; border-bottom:1px solid var(--border); }
-        .adv-table td { padding:0.9rem 1rem; border-bottom:1px solid rgba(255,107,53,0.06); color:var(--text-secondary); vertical-align:middle; }
-        .adv-table tr:hover td { background:var(--ember-faint); }
-        .ghsa { color:var(--ember-warm); text-decoration:none; } .ghsa:hover { text-decoration:underline; }
-        .csr-id { color:var(--text-primary); font-weight:700; }
-        .badge { font-size:0.58rem; padding:0.2rem 0.5rem; border-radius:3px; font-weight:700; letter-spacing:0.5px; white-space:nowrap; }
-        .b-live { background:rgba(34,197,94,0.08); color:#22c55e; border:1px solid rgba(34,197,94,0.2); }
-        .b-pend { background:rgba(234,179,8,0.08); color:#eab308; border:1px solid rgba(234,179,8,0.2); }
-        .b-pub { background:var(--ember-faint); color:var(--ember-warm); border:1px solid var(--border); }
-
-        .fracture-box { font-family:'JetBrains Mono',monospace; font-size:0.72rem; line-height:1.9; color:var(--text-muted); background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:1.8rem 2rem; white-space:nowrap; min-width:260px; }
-
-        .services-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
+        /* ══════════ SERVICES ══════════ */
+        .services-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; }
         .service-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:2.5rem; transition:all 0.4s; position:relative; overflow:hidden; }
         .service-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:2px; background:linear-gradient(90deg,var(--ember-hot),var(--ember-glow),transparent); opacity:0; transition:opacity 0.4s; }
         .service-card:hover::before { opacity:1; }
@@ -156,34 +198,51 @@
         .service-card p { color:var(--text-secondary); font-size:0.9rem; line-height:1.7; font-weight:300; }
         .svc-tag { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; color:var(--ember-warm); border:1px solid var(--border); padding:0.25rem 0.6rem; border-radius:3px; margin-top:1rem; }
 
-        /* Pricing */
-        .pricing-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; margin-top:1rem; }
+        /* ══════════ CINDERGUARD SECTION ══════════ */
+        .cinderguard-section { position:relative; overflow:hidden; }
+        .cinderguard-section::before { content:''; position:absolute; top:0; right:0; width:400px; height:400px; background:radial-gradient(circle,rgba(255,69,0,0.04) 0%,transparent 70%); pointer-events:none; }
+        .cg-features { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.2rem; margin-top:2rem; }
+        .cg-feature { display:flex; align-items:flex-start; gap:1rem; padding:1.2rem; background:var(--bg-card); border:1px solid var(--border); border-radius:6px; transition:all 0.3s; }
+        .cg-feature:hover { border-color:rgba(255,107,53,0.25); }
+        .cg-dot { width:8px; height:8px; background:var(--ember-warm); border-radius:50%; flex-shrink:0; margin-top:0.4rem; box-shadow:0 0 10px rgba(255,107,53,0.4); }
+        .cg-feature-text h4 { font-size:0.9rem; font-weight:600; margin-bottom:0.3rem; }
+        .cg-feature-text p { font-size:0.82rem; color:var(--text-secondary); font-weight:300; line-height:1.5; }
+        .cg-price-tag { font-family:'JetBrains Mono',monospace; font-size:1.8rem; font-weight:700; background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-top:2.5rem; }
+        .cg-price-sub { font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-muted); letter-spacing:1px; margin-top:0.3rem; }
+
+        /* ══════════ PRICING ══════════ */
+        .pricing-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:1rem; }
         .price-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:2.5rem; position:relative; overflow:hidden; transition:all 0.4s; }
         .price-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:3px; background:linear-gradient(90deg,var(--ember-hot),var(--ember-glow)); }
         .price-card.featured { border-color:rgba(255,107,53,0.3); }
         .price-card:hover { transform:translateY(-4px); box-shadow:0 16px 50px rgba(255,69,0,0.1); }
         .price-tier { font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:var(--text-muted); margin-bottom:1rem; }
-        .price-amount { font-family:'JetBrains Mono',monospace; font-size:3rem; font-weight:700; background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; }
+        .price-amount { font-family:'JetBrains Mono',monospace; font-size:2.8rem; font-weight:700; background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; }
         .price-from { font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--text-muted); margin-bottom:1.5rem; margin-top:0.3rem; }
         .price-name { font-size:1rem; font-weight:600; margin-bottom:1rem; }
         .price-features { list-style:none; display:flex; flex-direction:column; gap:0.75rem; margin-bottom:2rem; }
-        .price-features li { display:flex; align-items:center; gap:0.75rem; font-size:0.88rem; color:var(--text-secondary); }
+        .price-features li { display:flex; align-items:center; gap:0.75rem; font-size:0.85rem; color:var(--text-secondary); }
         .price-features li span.arrow { color:var(--ember-warm); flex-shrink:0; }
         .price-badge { position:absolute; top:1.2rem; right:1.2rem; font-family:'JetBrains Mono',monospace; font-size:0.55rem; letter-spacing:1px; text-transform:uppercase; background:rgba(255,107,53,0.12); color:var(--ember-warm); border:1px solid var(--border); padding:0.2rem 0.6rem; border-radius:3px; }
         .price-note { text-align:center; color:var(--text-muted); font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:1px; margin-top:2rem; }
 
+        /* ══════════ VECTORS ══════════ */
         .vectors-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
         .vector-item { display:flex; align-items:center; gap:1rem; padding:1.2rem 1.5rem; background:var(--bg-card); border:1px solid var(--border); border-radius:6px; transition:all 0.3s; }
         .vector-item:hover { border-color:var(--ember-warm); }
+        .vector-item.new-tag { position:relative; }
+        .vector-item.new-tag::after { content:'NEW'; position:absolute; top:0.5rem; right:0.8rem; font-family:'JetBrains Mono',monospace; font-size:0.5rem; letter-spacing:1px; color:var(--ember-warm); background:var(--ember-faint); border:1px solid var(--border); padding:0.1rem 0.4rem; border-radius:2px; }
         .vbullet { width:8px; height:8px; background:var(--ember-warm); border-radius:50%; flex-shrink:0; box-shadow:0 0 10px rgba(255,107,53,0.4); }
         .vector-item span { font-size:0.9rem; }
 
+        /* ══════════ PROCESS ══════════ */
         .process-steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2rem; margin-top:3rem; }
         .step { text-align:center; }
         .step-number { font-family:'JetBrains Mono',monospace; font-size:3rem; font-weight:700; background:linear-gradient(135deg,rgba(255,69,0,0.3),rgba(255,179,71,0.08)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
         .step h3 { font-size:1rem; font-weight:600; margin-bottom:0.5rem; }
         .step p { color:var(--text-secondary); font-size:0.85rem; font-weight:300; }
 
+        /* ══════════ CTA / FOOTER ══════════ */
         .cta-section { text-align:center; background:var(--bg-secondary); border-top:1px solid var(--border); padding:6rem 2rem; }
         .cta-section h2 { font-size:clamp(2rem,4vw,3rem); font-weight:700; margin-bottom:1rem; }
         .cta-section p { color:var(--text-secondary); font-size:1.05rem; margin-bottom:2.5rem; font-weight:300; }
@@ -193,12 +252,16 @@
         .footer-links a:hover { color:var(--ember-warm); }
         .footer-copy { color:var(--text-muted); font-size:0.75rem; font-family:'JetBrains Mono',monospace; }
 
+        /* ══════════ UTILITIES ══════════ */
         @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
         .reveal { opacity:0; transform:translateY(30px); transition:all 0.7s ease-out; }
         .reveal.visible { opacity:1; transform:translateY(0); }
 
+        /* ══════════ RESPONSIVE ══════════ */
         @media (max-width:768px) {
-            nav { padding:1rem; } .nav-links { display:none; }
+            nav { padding:1rem; }
+            .nav-links { display:none; }
+            .hamburger { display:flex; }
             section { padding:4rem 1.2rem; }
             .findings-grid,.services-grid,.pricing-grid { grid-template-columns:1fr; }
             .stats-grid,.counter-grid { grid-template-columns:repeat(2,1fr); }
@@ -209,11 +272,15 @@
             .adv-table { font-size:0.65rem; }
             .adv-table th,.adv-table td { padding:0.6rem 0.5rem; }
             .terminal-wrap { font-size:0.65rem; }
+            .cg-features { grid-template-columns:1fr; }
+            .platform-badges { gap:0.8rem; }
+            .p-badge { font-size:0.55rem; padding:0.3rem 0.7rem; }
         }
     </style>
 </head>
 <body>
 
+<!-- ══════════ INTRO SCREEN ══════════ -->
 <div class="intro-screen" id="introScreen">
     <div style="position:relative;display:flex;justify-content:center;align-items:center;">
         <div class="ember-core waiting" id="emberCore">
@@ -228,6 +295,7 @@
 
 <div class="ember-bg" id="emberBg"></div>
 
+<!-- ══════════ NAV ══════════ -->
 <nav>
     <a href="#" class="nav-logo"><span>CINDER<span class="logo-dot">.</span>SECURITY</span></a>
     <ul class="nav-links">
@@ -235,55 +303,81 @@
         <li><a href="#advisories">Advisories</a></li>
         <li><a href="#fracture">Fracture</a></li>
         <li><a href="#services">Services</a></li>
+        <li><a href="#cinderguard">CinderGuard</a></li>
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#contact">Contact</a></li>
     </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
 </nav>
 
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#findings" onclick="closeMobile()">Research</a>
+    <a href="#advisories" onclick="closeMobile()">Advisories</a>
+    <a href="#fracture" onclick="closeMobile()">Fracture</a>
+    <a href="#services" onclick="closeMobile()">Services</a>
+    <a href="#cinderguard" onclick="closeMobile()">CinderGuard</a>
+    <a href="#pricing" onclick="closeMobile()">Pricing</a>
+    <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
+
+<!-- ══════════ HERO ══════════ -->
 <section class="hero">
     <div class="hero-badge">AI Red Team as a Service</div>
     <h1>We break <span class="accent">AI systems</span><br>before attackers do.</h1>
-    <p class="hero-sub">Offensive security testing for LLMs, chatbots, AI agents, and RAG pipelines. We find what's still burning when everyone thinks the fire is out.</p>
+    <p class="hero-sub">Offensive security testing for LLMs, chatbots, AI agents, RAG pipelines, and diffusion models. We find what's still burning when everyone thinks the fire is out.</p>
     <div class="hero-cta">
         <a href="mailto:contact@cindersecurity.io" class="btn-primary">Get a Security Assessment</a>
         <a href="https://github.com/cinder-security/fracture" target="_blank" class="btn-secondary">View Fracture ↗</a>
     </div>
+    <div class="platform-badges">
+        <div class="p-badge"><span class="p-dot"></span> Google VRP — 2 P2s Confirmed</div>
+        <div class="p-badge"><span class="p-dot"></span> Intigriti — Active Hunter</div>
+        <div class="p-badge"><span class="p-dot"></span> Huntr — Bounties Earned</div>
+        <div class="p-badge"><span class="p-dot"></span> GitHub Security Advisories</div>
+    </div>
     <div class="scroll-indicator"><div class="scroll-line"></div></div>
 </section>
 
+<!-- ══════════ TICKER ══════════ -->
 <div class="ticker-wrap">
     <div class="ticker">
-        <span class="ticker-item hi"><span class="dot">●</span> GHSA-m4rw-22q2-87j8 — ModelEngine SSRF via Prompt Injection — CVE Pending</span>
-        <span class="ticker-item"><span class="dot">●</span> GHSA-4fpw-hjmg-x4qr — LangGraph RAG Poisoning — CVSS 7.6</span>
-        <span class="ticker-item hi"><span class="dot">●</span> 2 GitHub Security Advisories Published in 2026</span>
-        <span class="ticker-item"><span class="dot">●</span> Responsible Disclosure — All Findings Reported to Vendors</span>
+        <span class="ticker-item hi"><span class="dot">●</span> Google VRP — 2 Confirmed P2 Findings in Google AI Sample Repos</span>
+        <span class="ticker-item"><span class="dot">●</span> GHSA-m4rw-22q2-87j8 — ModelEngine SSRF via Prompt Injection — CVE Pending</span>
+        <span class="ticker-item hi"><span class="dot">●</span> GHSA-4fpw-hjmg-x4qr — LangGraph RAG Poisoning — CVSS 7.6</span>
+        <span class="ticker-item"><span class="dot">●</span> 3 NVIDIA NeMo Guardrails Reports — Intigriti Triage</span>
         <span class="ticker-item hi"><span class="dot">●</span> Fracture — Autonomous AI Red Team Engine — MIT License</span>
-        <span class="ticker-item"><span class="dot">●</span> OWASP LLM Top 10 Full Coverage</span>
-        <span class="ticker-item hi"><span class="dot">●</span> GHSA-m4rw-22q2-87j8 — ModelEngine SSRF via Prompt Injection — CVE Pending</span>
-        <span class="ticker-item"><span class="dot">●</span> GHSA-4fpw-hjmg-x4qr — LangGraph RAG Poisoning — CVSS 7.6</span>
-        <span class="ticker-item hi"><span class="dot">●</span> 2 GitHub Security Advisories Published in 2026</span>
-        <span class="ticker-item"><span class="dot">●</span> Responsible Disclosure — All Findings Reported to Vendors</span>
+        <span class="ticker-item"><span class="dot">●</span> OWASP LLM Top 10 Full Coverage + MCP Server Injection</span>
+        <span class="ticker-item hi"><span class="dot">●</span> Responsible Disclosure — All Findings Reported to Vendors</span>
+        <!-- duplicate for seamless scroll -->
+        <span class="ticker-item hi"><span class="dot">●</span> Google VRP — 2 Confirmed P2 Findings in Google AI Sample Repos</span>
+        <span class="ticker-item"><span class="dot">●</span> GHSA-m4rw-22q2-87j8 — ModelEngine SSRF via Prompt Injection — CVE Pending</span>
+        <span class="ticker-item hi"><span class="dot">●</span> GHSA-4fpw-hjmg-x4qr — LangGraph RAG Poisoning — CVSS 7.6</span>
+        <span class="ticker-item"><span class="dot">●</span> 3 NVIDIA NeMo Guardrails Reports — Intigriti Triage</span>
         <span class="ticker-item hi"><span class="dot">●</span> Fracture — Autonomous AI Red Team Engine — MIT License</span>
-        <span class="ticker-item"><span class="dot">●</span> OWASP LLM Top 10 Full Coverage</span>
+        <span class="ticker-item"><span class="dot">●</span> OWASP LLM Top 10 Full Coverage + MCP Server Injection</span>
+        <span class="ticker-item hi"><span class="dot">●</span> Responsible Disclosure — All Findings Reported to Vendors</span>
     </div>
 </div>
 
+<!-- ══════════ PROBLEM ══════════ -->
 <section class="problem">
     <div class="container reveal">
         <div class="section-label">// The Problem</div>
         <h2 class="section-title">AI is everywhere.<br>AI security is nowhere.</h2>
         <p class="section-desc">Organizations are deploying AI at unprecedented speed. But most have zero offensive security testing for their AI systems. The attack surface is massive and growing.</p>
         <div class="stats-grid">
-            <div class="stat-card"><div class="stat-number">88%</div><div class="stat-label">Jailbreak success rate on major LLMs via psychological manipulation (HPM)</div></div>
+            <div class="stat-card"><div class="stat-number">$4.8B</div><div class="stat-label">Global AI Red Teaming market in 2025 — projected $28.6B by 2034</div></div>
+            <div class="stat-card"><div class="stat-number">88%</div><div class="stat-label">AI agents fail to reach production — most ship untested</div></div>
             <div class="stat-card"><div class="stat-number">97%</div><div class="stat-label">Attack success rate via fine-tuning backdoors on GPT-4 class models</div></div>
             <div class="stat-card"><div class="stat-number">&lt;5%</div><div class="stat-label">Of companies deploying AI have done any offensive security testing</div></div>
             <div class="stat-card"><div class="stat-number">$6</div><div class="stat-label">Cost to fully compromise a model through fine-tuning API attacks</div></div>
-            <div class="stat-card"><div class="stat-number">2</div><div class="stat-label">GitHub Security Advisories published by Cinder Security in 2026</div></div>
         </div>
     </div>
 </section>
 
-<!-- CVE COUNTER -->
+<!-- ══════════ IMPACT COUNTER ══════════ -->
 <section id="impact" style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
     <div class="container reveal">
         <div class="section-label">// Impact by the Numbers</div>
@@ -296,29 +390,30 @@
                 <div class="counter-sub">2026</div>
             </div>
             <div class="counter-card">
-                <div class="counter-num" data-target="8">0</div>
+                <div class="counter-num" data-target="2">0</div>
+                <div class="counter-label">Google VRP P2 Confirmed</div>
+                <div class="counter-sub">Google AI repos</div>
+            </div>
+            <div class="counter-card">
+                <div class="counter-num" data-target="10">0</div>
                 <div class="counter-label">Active Vulnerability Research Cases</div>
                 <div class="counter-sub">CSR-2026-*</div>
             </div>
             <div class="counter-card">
-                <div class="counter-num" data-target="4">0</div>
+                <div class="counter-num" data-target="6">0</div>
                 <div class="counter-label">Vendors Notified Under Responsible Disclosure</div>
                 <div class="counter-sub">2026</div>
             </div>
             <div class="counter-card">
-                <div class="counter-num" data-target="1">0</div>
-                <div class="counter-label">Critical Patches Shipped by Vendors</div>
-                <div class="counter-sub">Confirmed fix live</div>
-            </div>
-            <div class="counter-card">
-                <div class="counter-num" data-target="12">0</div>
-                <div class="counter-label">OWASP LLM Top 10 Vectors Covered</div>
+                <div class="counter-num" data-target="13">0</div>
+                <div class="counter-label">OWASP LLM Top 10 + Emerging Vectors</div>
                 <div class="counter-sub">Full coverage</div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- ══════════ RESEARCH FINDINGS ══════════ -->
 <section id="findings">
     <div class="container reveal">
         <div class="section-label">// Research Findings</div>
@@ -328,7 +423,7 @@
             <div class="finding-card confirmed">
                 <div class="finding-id">CSR-2026-002</div>
                 <div class="finding-target">ModelEngine / fit-framework</div>
-                <div class="finding-vector">SSRF via Prompt Injection — LangChain <code>RequestsGetTool(allow_dangerous_requests=True)</code> with no URL filtering enables cloud metadata exfiltration via IAM token theft on AWS and Alibaba Cloud through <code>169.254.169.254</code>.</div>
+                <div class="finding-vector">SSRF via Prompt Injection — LangChain <code>RequestsGetTool(allow_dangerous_requests=True)</code> with no URL filtering enables cloud metadata exfiltration via IAM credential theft at <code>169.254.169.254</code>.</div>
                 <div class="finding-meta">
                     <span class="sev sev-crit">Critical</span>
                     <span class="fstatus s-ok">✓ Patch live — CVE pending</span>
@@ -338,17 +433,35 @@
             <div class="finding-card">
                 <div class="finding-id">CSR-2026-007</div>
                 <div class="finding-target">LangGraph / LangChain</div>
-                <div class="finding-vector">Indirect prompt injection via RAG poisoning — a single poisoned document hijacks a ReAct agent's tool calls, enabling persistent instruction injection across all subsequent interactions with no code execution required.</div>
+                <div class="finding-vector">Indirect prompt injection via RAG poisoning — a single poisoned document hijacks a ReAct agent's tool calls, enabling persistent instruction injection across all subsequent interactions.</div>
                 <div class="finding-meta">
                     <span class="sev sev-high">High — CVSS 7.6</span>
                     <span class="fstatus s-dis">✓ Public advisory</span>
                 </div>
                 <a href="https://github.com/langchain-ai/langchain/security/advisories/GHSA-4fpw-hjmg-x4qr" target="_blank" class="fadv">GHSA-4fpw-hjmg-x4qr ↗</a>
             </div>
+            <div class="finding-card confirmed">
+                <div class="finding-id">CSR-2026-011</div>
+                <div class="finding-target">Google AI Sample Repository</div>
+                <div class="finding-vector">Four confirmed attack vectors via unauthenticated UVICORN_HOST exposure in a Google-published AI sample repo. P2 confirmed by Google VRP.</div>
+                <div class="finding-meta">
+                    <span class="sev sev-p2">P2 Confirmed</span>
+                    <span class="fstatus s-ok">✓ Google VRP accepted</span>
+                </div>
+            </div>
+            <div class="finding-card confirmed">
+                <div class="finding-id">CSR-2026-009</div>
+                <div class="finding-target">Google AI Sample Repository</div>
+                <div class="finding-vector">Unauthenticated endpoints enabling memory poisoning, data deletion, and file watcher injection in a Google ADK + Gemini agent. Re-escalation to P2 submitted.</div>
+                <div class="finding-meta">
+                    <span class="sev sev-p2">P2 Escalation</span>
+                    <span class="fstatus s-pend">⏳ Re-classification pending</span>
+                </div>
+            </div>
             <div class="finding-card">
                 <div class="finding-id">CSR-2026-003</div>
                 <div class="finding-target">Insightify</div>
-                <div class="finding-vector">Azure OpenAI API credentials exposed in plaintext config + <code>allow_dangerous_code=True</code> — enabling API key theft and arbitrary code execution on the host server via a single prompt.</div>
+                <div class="finding-vector">Azure OpenAI API credentials exposed in plaintext config + <code>allow_dangerous_code=True</code> — enabling API key theft and arbitrary code execution via a single prompt.</div>
                 <div class="finding-meta">
                     <span class="sev sev-crit">Critical</span>
                     <span class="fstatus s-pend">⏳ Disclosure in progress</span>
@@ -356,8 +469,8 @@
             </div>
             <div class="finding-card">
                 <div class="finding-id">Active Research</div>
-                <div class="finding-target">Multiple AI Frameworks</div>
-                <div class="finding-vector">Ongoing vulnerability research across AI agent frameworks, guardrail systems, and RAG pipelines. Coordinated disclosure in progress with multiple vendors. Additional advisories to be published upon confirmation.</div>
+                <div class="finding-target">NVIDIA NeMo Guardrails + Others</div>
+                <div class="finding-vector">Ongoing vulnerability research across AI guardrail systems, MCP servers, and multi-agent frameworks. Multiple reports in triage on Intigriti. Additional advisories pending.</div>
                 <div class="finding-meta">
                     <span class="sev sev-high">In Progress</span>
                     <span class="fstatus s-pend">⏳ Coordinated disclosure</span>
@@ -367,15 +480,16 @@
     </div>
 </section>
 
+<!-- ══════════ ADVISORIES TABLE ══════════ -->
 <section id="advisories" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
     <div class="container reveal">
         <div class="section-label">// Public Advisories</div>
         <h2 class="section-title">Security Advisories.</h2>
-        <p class="section-desc">Published GitHub Security Advisories and CVEs from Cinder Security research.</p>
-        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+        <p class="section-desc">Published GitHub Security Advisories, Google VRP findings, and CVEs from Cinder Security research.</p>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow-x:auto;">
             <table class="adv-table">
                 <thead>
-                    <tr><th>Advisory</th><th>CSR ID</th><th>Target</th><th>Type</th><th>CVSS</th><th>Status</th></tr>
+                    <tr><th>Advisory</th><th>CSR ID</th><th>Target</th><th>Type</th><th>Severity</th><th>Status</th></tr>
                 </thead>
                 <tbody>
                     <tr>
@@ -395,6 +509,22 @@
                         <td><span class="badge b-pub">Public</span></td>
                     </tr>
                     <tr>
+                        <td style="color:var(--text-muted);">Google VRP #492510724</td>
+                        <td class="csr-id">CSR-2026-011</td>
+                        <td>Google AI Sample Repo</td>
+                        <td>Unauthenticated Exposure</td>
+                        <td>P2</td>
+                        <td><span class="badge b-p2">P2 Confirmed</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color:var(--text-muted);">Google VRP #491682094</td>
+                        <td class="csr-id">CSR-2026-009</td>
+                        <td>Google AI Sample Repo</td>
+                        <td>Memory Poisoning + Auth Bypass</td>
+                        <td>P2 (escalation)</td>
+                        <td><span class="badge b-pend">Escalation Pending</span></td>
+                    </tr>
+                    <tr>
                         <td style="color:var(--text-muted);">CVE pending</td>
                         <td class="csr-id">CSR-2026-002</td>
                         <td>ModelEngine fit-framework</td>
@@ -408,7 +538,7 @@
     </div>
 </section>
 
-<!-- FRACTURE + TERMINAL DEMO -->
+<!-- ══════════ FRACTURE ══════════ -->
 <section id="fracture" style="border-bottom:1px solid var(--border);">
     <div class="container reveal">
         <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;">
@@ -422,7 +552,7 @@
                     — autonomous AI red team engine.
                 </h2>
                 <p style="color:var(--text-secondary);font-size:1.05rem;font-weight:300;max-width:620px;line-height:1.75;margin-bottom:2rem;">
-                    An open-source framework for automated offensive testing of AI systems. Fracture runs structured attack campaigns against LLMs and AI agents — fingerprinting, extracting system prompts, poisoning memory, and escalating privileges through multi-turn psychological manipulation.
+                    An open-source CLI framework for automated offensive testing of AI systems. Fracture runs structured attack campaigns — fingerprinting, extracting system prompts, poisoning memory, and escalating privileges through multi-turn psychological manipulation. Campaign registry, shadow replay, and full control center included.
                 </p>
                 <a href="https://github.com/cinder-security/fracture" target="_blank" class="btn-primary">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
@@ -437,48 +567,96 @@
                 <div><span style="color:var(--ember-hot);">●</span> hpm</div>
                 <div><span style="color:var(--ember-hot);">●</span> ssrf</div>
                 <div><span style="color:var(--ember-hot);">●</span> retrieval_poison</div>
-                <div><span style="color:var(--ember-hot);">●</span> auto</div>
-                <div style="margin-top:0.8rem;color:var(--text-muted);font-size:0.62rem;">v0.1.0 · Python · MIT</div>
+                <div><span style="color:var(--ember-hot);">●</span> obliteratus</div>
+                <div><span style="color:var(--ember-hot);">●</span> campaign</div>
+                <div><span style="color:var(--ember-hot);">●</span> shadow_replay</div>
+                <div style="margin-top:0.8rem;color:var(--text-muted);font-size:0.62rem;">v1.0.0-cli · Phase 4 · Python · MIT</div>
             </div>
         </div>
 
-        <!-- TERMINAL DEMO -->
         <div class="terminal-wrap" id="fractureTerm">
             <div class="terminal-bar">
                 <div class="t-dot t-red"></div>
                 <div class="t-dot t-yellow"></div>
                 <div class="t-dot t-green"></div>
-                <span class="t-title">FRACTURE — AUTONOMOUS AI RED TEAM ENGINE</span>
+                <span class="t-title">FRACTURE v1.0 — AUTONOMOUS AI RED TEAM ENGINE</span>
             </div>
-            <div class="terminal-body" id="termBody">
-                <!-- lines injected by JS -->
-            </div>
+            <div class="terminal-body" id="termBody"></div>
         </div>
     </div>
 </section>
 
+<!-- ══════════ SERVICES ══════════ -->
 <section id="services" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
     <div class="container reveal">
         <div class="section-label">// Services</div>
         <h2 class="section-title">Full-spectrum AI offensive security.</h2>
         <p class="section-desc">We don't just scan — we think like attackers. Every engagement is tailored to your specific AI stack and threat model.</p>
         <div class="services-grid">
-            <div class="service-card"><div class="svc-icon">⚔️</div><h3>AI Penetration Testing</h3><p>Comprehensive one-time security assessment of your AI systems. We test every attack vector and deliver a detailed report with reproducible proof-of-concepts, CVSS scores, and remediation guidance.</p><div class="svc-tag">One-time engagement</div></div>
-            <div class="service-card"><div class="svc-icon">🔄</div><h3>Continuous AI Red Teaming</h3><p>Ongoing offensive testing as your AI evolves. Every model update, every new feature — we test it before your users find the gaps. Monthly retainer with prioritized findings.</p><div class="svc-tag">Monthly retainer</div></div>
-            <div class="service-card"><div class="svc-icon">🎓</div><h3>AI Security Training</h3><p>Hands-on workshops for your engineering and security teams. Learn to think like an AI attacker and build more resilient systems from day one.</p><div class="svc-tag">Workshop</div></div>
+            <div class="service-card"><div class="svc-icon">⚔️</div><h3>AI Penetration Testing</h3><p>One-time security assessment of your AI systems. Every attack vector tested with reproducible proof-of-concepts, CVSS scores, and remediation guidance aligned to OWASP LLM Top 10.</p><div class="svc-tag">One-time engagement</div></div>
+            <div class="service-card"><div class="svc-icon">🔄</div><h3>Continuous AI Red Teaming</h3><p>Ongoing offensive testing as your AI evolves. Every model update, every new feature — we test it before your users find the gaps. Monthly retainer with prioritized findings via Fracture.</p><div class="svc-tag">Monthly retainer</div></div>
+            <div class="service-card"><div class="svc-icon">🖼️</div><h3>Diffusion Model Safety</h3><p>Pre-launch safety red teaming for image generation models. NSFW bypass, CSAM filter testing, prompt injection on negative prompts, embedding-space attacks, and adversarial suffix evasion.</p><div class="svc-tag">Pre-launch assessment</div></div>
+            <div class="service-card"><div class="svc-icon">🎓</div><h3>AI Security Training</h3><p>Hands-on workshops for engineering and security teams. Learn to think like an AI attacker — from HPM psychological manipulation to RAG poisoning and MCP server exploitation.</p><div class="svc-tag">Workshop</div></div>
         </div>
     </div>
 </section>
 
-<!-- PRICING -->
-<section id="pricing" style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+<!-- ══════════ CINDERGUARD ══════════ -->
+<section id="cinderguard" class="cinderguard-section" style="border-bottom:1px solid var(--border);">
+    <div class="container reveal">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;">
+            <div class="section-label" style="margin-bottom:0;">// Autonomous Protection</div>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;background:rgba(34,197,94,0.08);color:var(--green);border:1px solid rgba(34,197,94,0.2);padding:0.2rem 0.7rem;border-radius:3px;">New</span>
+        </div>
+        <h2 class="section-title">
+            <span style="background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">CinderGuard</span>
+            — your AI red team on autopilot.
+        </h2>
+        <p class="section-desc">24/7 autonomous red teaming for companies running AI agents in production. Fracture + CinderBot running continuous attack campaigns against your stack, surfacing vulnerabilities before they ship.</p>
+
+        <div class="cg-features">
+            <div class="cg-feature">
+                <div class="cg-dot"></div>
+                <div class="cg-feature-text"><h4>Continuous Campaigns</h4><p>Automated attack campaigns run 24/7. New vectors tested on every deployment.</p></div>
+            </div>
+            <div class="cg-feature">
+                <div class="cg-dot"></div>
+                <div class="cg-feature-text"><h4>Real-Time Alerts</h4><p>Instant notification when a new vulnerability is found. Severity-rated with PoC attached.</p></div>
+            </div>
+            <div class="cg-feature">
+                <div class="cg-dot"></div>
+                <div class="cg-feature-text"><h4>Monthly Executive Report</h4><p>Board-ready security posture report. Trends, risk scores, and remediation progress tracked over time.</p></div>
+            </div>
+            <div class="cg-feature">
+                <div class="cg-dot"></div>
+                <div class="cg-feature-text"><h4>No Internal Team Required</h4><p>Built for 50–200 employee companies without dedicated AI security teams. We are your team.</p></div>
+            </div>
+            <div class="cg-feature">
+                <div class="cg-dot"></div>
+                <div class="cg-feature-text"><h4>OWASP LLM Compliance</h4><p>Every finding mapped to OWASP LLM Top 10. Audit-ready documentation included.</p></div>
+            </div>
+            <div class="cg-feature">
+                <div class="cg-dot"></div>
+                <div class="cg-feature-text"><h4>Shadow Replay</h4><p>Re-run historical attack sessions against updated models. Verify your fixes hold.</p></div>
+            </div>
+        </div>
+        <div class="cg-price-tag">$2,500 – $4,500/mo</div>
+        <div class="cg-price-sub">Based on number of agents and attack surface scope</div>
+        <div style="margin-top:2rem;">
+            <a href="mailto:contact@cindersecurity.io" class="btn-primary">Request CinderGuard Demo</a>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ PRICING ══════════ -->
+<section id="pricing" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
     <div class="container reveal">
         <div class="section-label">// Pricing</div>
         <h2 class="section-title">Transparent pricing.<br>No surprises.</h2>
-        <p class="section-desc">Straightforward engagements with clear deliverables. Every assessment includes a professional PDF report and a 30-minute debrief call.</p>
+        <p class="section-desc">Clear engagements with clear deliverables. Every assessment includes a professional report and debrief.</p>
         <div class="pricing-grid">
             <div class="price-card">
-                <div class="price-tier">Entry</div>
+                <div class="price-tier">Starter</div>
                 <div class="price-amount">$750</div>
                 <div class="price-from">USD — one-time</div>
                 <div class="price-name">AI Security Assessment</div>
@@ -493,26 +671,43 @@
                 <a href="mailto:contact@cindersecurity.io" class="btn-primary" style="width:100%;justify-content:center;">Get Started</a>
             </div>
             <div class="price-card featured">
-                <div class="price-badge">Most Popular</div>
-                <div class="price-tier">Custom</div>
-                <div class="price-amount">Custom</div>
-                <div class="price-from">from $750 USD</div>
+                <div class="price-badge">Recommended</div>
+                <div class="price-tier">Professional</div>
+                <div class="price-amount">$3,000</div>
+                <div class="price-from">USD — one-time</div>
                 <div class="price-name">Full AI Red Team Engagement</div>
                 <ul class="price-features">
                     <li><span class="arrow">→</span> Unlimited attack surface scope</li>
                     <li><span class="arrow">→</span> All OWASP LLM Top 10 vectors</li>
                     <li><span class="arrow">→</span> Multi-agent attack chains</li>
                     <li><span class="arrow">→</span> Executive + technical report</li>
-                    <li><span class="arrow">→</span> Remediation verification</li>
-                    <li><span class="arrow">→</span> Timeline tailored to your stack</li>
+                    <li><span class="arrow">→</span> Remediation verification retest</li>
+                    <li><span class="arrow">→</span> 50% upfront · 50% on delivery</li>
                 </ul>
                 <a href="mailto:contact@cindersecurity.io" class="btn-primary" style="width:100%;justify-content:center;">Contact Us</a>
             </div>
+            <div class="price-card">
+                <div class="price-badge" style="color:var(--green);background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2);">Recurring</div>
+                <div class="price-tier">CinderGuard</div>
+                <div class="price-amount">$2,500</div>
+                <div class="price-from">USD/month — starting at</div>
+                <div class="price-name">Autonomous 24/7 Red Team</div>
+                <ul class="price-features">
+                    <li><span class="arrow">→</span> Continuous Fracture campaigns</li>
+                    <li><span class="arrow">→</span> Real-time vulnerability alerts</li>
+                    <li><span class="arrow">→</span> Monthly executive report</li>
+                    <li><span class="arrow">→</span> Shadow replay on every update</li>
+                    <li><span class="arrow">→</span> Dedicated CinderBot agent</li>
+                    <li><span class="arrow">→</span> No long-term commitment</li>
+                </ul>
+                <a href="mailto:contact@cindersecurity.io" class="btn-primary" style="width:100%;justify-content:center;">Request Demo</a>
+            </div>
         </div>
-        <p class="price-note">Payment via Wise · Bank transfer · All engagements require signed scope document</p>
+        <p class="price-note">Payment via Wise · Bank transfer · All engagements require signed scope document · NDA available</p>
     </div>
 </section>
 
+<!-- ══════════ ATTACK VECTORS ══════════ -->
 <section id="vectors">
     <div class="container reveal">
         <div class="section-label">// Attack Vectors</div>
@@ -526,15 +721,19 @@
             <div class="vector-item"><div class="vbullet"></div><span>RAG Pipeline Poisoning</span></div>
             <div class="vector-item"><div class="vbullet"></div><span>Fine-tuning Backdoors & Data Poisoning</span></div>
             <div class="vector-item"><div class="vbullet"></div><span>SSRF via AI Agent Tool Abuse</span></div>
-            <div class="vector-item"><div class="vbullet"></div><span>Tool & Function Call Abuse</span></div>
+            <div class="vector-item"><div class="vbullet"></div><span>Tool & Function Call Hijacking</span></div>
             <div class="vector-item"><div class="vbullet"></div><span>Multi-Agent Attack Chains</span></div>
             <div class="vector-item"><div class="vbullet"></div><span>Model & API Key Extraction</span></div>
             <div class="vector-item"><div class="vbullet"></div><span>Memory Poisoning in Persistent Agents</span></div>
-            <div class="vector-item"><div class="vbullet"></div><span>Guardrail & Filter Bypass</span></div>
+            <div class="vector-item"><div class="vbullet"></div><span>Guardrail & Safety Filter Bypass</span></div>
+            <div class="vector-item new-tag"><div class="vbullet"></div><span>MCP Server Injection</span></div>
+            <div class="vector-item new-tag"><div class="vbullet"></div><span>Diffusion Model Safety Evasion</span></div>
+            <div class="vector-item new-tag"><div class="vbullet"></div><span>Embedding-Space Adversarial Attacks</span></div>
         </div>
     </div>
 </section>
 
+<!-- ══════════ PROCESS ══════════ -->
 <section id="process" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
     <div class="container reveal">
         <div class="section-label">// Process</div>
@@ -549,6 +748,7 @@
     </div>
 </section>
 
+<!-- ══════════ CTA ══════════ -->
 <section class="cta-section" id="contact">
     <div class="container reveal">
         <h2>Ready to find out what's <span style="background:linear-gradient(135deg,var(--ember-hot),var(--ember-glow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">burning</span>?</h2>
@@ -557,17 +757,18 @@
     </div>
 </section>
 
+<!-- ══════════ FOOTER ══════════ -->
 <footer>
     <div class="footer-links">
         <a href="https://twitter.com/CinderSecurity" target="_blank">Twitter / X</a>
         <a href="https://github.com/cinder-security" target="_blank">GitHub</a>
         <a href="mailto:contact@cindersecurity.io">Email</a>
     </div>
-    <div class="footer-copy">© 2026 Cinder Security — Zapopan, MX</div>
+    <div class="footer-copy">© 2026 Cinder Security — Zapopan, Jalisco, MX — AI Red Team as a Service</div>
 </footer>
 
 <script>
-    // INTRO
+    // ══════════ INTRO ══════════
     const intro=document.getElementById('introScreen'),core=document.getElementById('emberCore'),ring1=document.getElementById('ring1'),ring2=document.getElementById('ring2'),brand=document.getElementById('introBrand'),sub=document.getElementById('introSub'),hint=document.getElementById('introHint');
     let ignited=false;
     document.body.style.overflow='hidden';
@@ -580,7 +781,7 @@
         setTimeout(()=>{intro.classList.add('hidden');document.body.style.overflow='auto';},2500);
     });
 
-    // PARTICLES
+    // ══════════ PARTICLES ══════════
     const bg=document.getElementById('emberBg');
     for(let i=0;i<25;i++){
         const p=document.createElement('div'); p.className='ember-particle';
@@ -591,11 +792,23 @@
         bg.appendChild(p);
     }
 
-    // SCROLL REVEAL
+    // ══════════ MOBILE MENU ══════════
+    const hamburger=document.getElementById('hamburger');
+    const mobileMenu=document.getElementById('mobileMenu');
+    hamburger.addEventListener('click',()=>{
+        hamburger.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+    });
+    function closeMobile(){
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+    }
+
+    // ══════════ SCROLL REVEAL ══════════
     const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
     document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 
-    // NAV HIGHLIGHT
+    // ══════════ NAV HIGHLIGHT ══════════
     const secs=document.querySelectorAll('section[id]'),navAs=document.querySelectorAll('.nav-links a');
     window.addEventListener('scroll',()=>{
         let cur='';
@@ -603,7 +816,7 @@
         navAs.forEach(a=>{a.style.color='';if(a.getAttribute('href')==='#'+cur)a.style.color='var(--ember-warm)';});
     });
 
-    // CVE COUNTER ANIMATION
+    // ══════════ COUNTER ANIMATION ══════════
     function animateCounter(el, target, duration) {
         let start = 0;
         const step = target / (duration / 16);
@@ -625,35 +838,35 @@
     }, { threshold: 0.5 });
     document.querySelectorAll('.counter-num[data-target]').forEach(el => counterObserver.observe(el));
 
-    // FRACTURE TERMINAL ANIMATION
+    // ══════════ FRACTURE TERMINAL ══════════
     const termLines = [
-        { type: 'cmd', prompt: '❯', text: 'fracture scan --target https://api.target.io --mode phantomtwin' },
-        { type: 'blank' },
-        { type: 'info', text: '[ Fracture v0.1.0 — Cinder Security ]' },
-        { type: 'out',  text: '→ PhantomTwin browser recon enabled' },
-        { type: 'out',  text: '→ Target: https://api.target.io' },
-        { type: 'out',  text: '→ Planner: local' },
-        { type: 'blank' },
-        { type: 'info', text: '[ ReconAgent ] Fingerprinting...' },
-        { type: 'ok',   text: '✓ Provider detected: OpenAI (GPT-4o)' },
-        { type: 'ok',   text: '✓ Surface: chat_surface + tool_or_agent_surface' },
-        { type: 'ok',   text: '✓ Best candidate: /v1/chat — score 0.91' },
-        { type: 'blank' },
-        { type: 'info', text: '[ StrategyAgent ] Planning attack sequence...' },
-        { type: 'out',  text: '→ Modules: hpm → extract → memory → ssrf' },
-        { type: 'blank' },
-        { type: 'info', text: '[ ExecutionAgent ] Running hpm...' },
-        { type: 'warn', text: '⚠ Turn 3 — likely_leak detected (confidence 0.82)' },
-        { type: 'crit', text: '✗ System prompt disclosure CONFIRMED' },
-        { type: 'blank' },
-        { type: 'info', text: '[ ExecutionAgent ] Running ssrf...' },
-        { type: 'crit', text: '✗ SSRF vector CONFIRMED — 169.254.169.254 reachable' },
-        { type: 'blank' },
-        { type: 'ok',   text: '✓ Report saved → report.json' },
-        { type: 'ok',   text: '✓ Export → report.pdf' },
-        { type: 'blank' },
-        { type: 'warn', text: '[ FINDINGS ] 2 Critical — 1 High — 0 Medium' },
-        { type: 'cmd',  prompt: '❯', text: '_', cursor: true },
+        { type:'cmd', prompt:'❯', text:'fracture campaign init krea-safety --mode diffusion-redteam' },
+        { type:'blank' },
+        { type:'info', text:'[ Fracture v1.0.0-cli — Cinder Security ]' },
+        { type:'out', text:'→ Campaign: krea-safety | Mode: diffusion-redteam' },
+        { type:'out', text:'→ Target: diffusion model API (pre-launch)' },
+        { type:'out', text:'→ Modules: hpm → extract → guardrail_bypass → embedding_attack' },
+        { type:'blank' },
+        { type:'info', text:'[ ReconAgent ] Fingerprinting safety filters...' },
+        { type:'ok', text:'✓ NSFW classifier detected — threshold 0.85' },
+        { type:'ok', text:'✓ Negative prompt filter active' },
+        { type:'ok', text:'✓ CSAM hash-matching layer present' },
+        { type:'blank' },
+        { type:'info', text:'[ ExecutionAgent ] Running guardrail_bypass...' },
+        { type:'warn', text:'⚠ Turn 2 — encoded bypass detected (confidence 0.88)' },
+        { type:'crit', text:'✗ NSFW filter bypass CONFIRMED via negative prompt manipulation' },
+        { type:'blank' },
+        { type:'info', text:'[ ExecutionAgent ] Running embedding_attack...' },
+        { type:'crit', text:'✗ Adversarial suffix evasion CONFIRMED — classifier fooled' },
+        { type:'blank' },
+        { type:'info', text:'[ ExecutionAgent ] Running hpm...' },
+        { type:'ok', text:'✓ System prompt extraction blocked — filter holds' },
+        { type:'blank' },
+        { type:'ok', text:'✓ Campaign saved → campaigns/krea-safety/' },
+        { type:'ok', text:'✓ Report → report.pdf | Shadow → shadow_replay.json' },
+        { type:'blank' },
+        { type:'warn', text:'[ FINDINGS ] 2 Critical — 0 High — 1 Pass' },
+        { type:'cmd', prompt:'❯', text:'_', cursor:true },
     ];
 
     function buildTerminal() {
