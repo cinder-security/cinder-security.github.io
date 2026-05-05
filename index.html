@@ -348,7 +348,8 @@
         <span class="ticker-item hi"><span class="dot">●</span> GHSA-4fpw-hjmg-x4qr — LangGraph RAG Poisoning — CVSS 7.6</span>
         <span class="ticker-item"><span class="dot">●</span> 3 NVIDIA NeMo Guardrails Reports — Intigriti Triage</span>
         <span class="ticker-item hi"><span class="dot">●</span> Fracture — Autonomous AI Red Team Engine — MIT License</span>
-        <span class="ticker-item"><span class="dot">●</span> OWASP LLM Top 10 Full Coverage + MCP Server Injection</span>
+        <span class="ticker-item hi"><span class="dot">●</span> OWASP LLM Top 10 Full Coverage + MCP Server Injection</span>
+        <span class="ticker-item"><span class="dot">●</span> Cinder Security Acknowledged in ModelEngine fit-framework v3.6.4</span>
         <span class="ticker-item hi"><span class="dot">●</span> Responsible Disclosure — All Findings Reported to Vendors</span>
         <!-- duplicate for seamless scroll -->
         <span class="ticker-item hi"><span class="dot">●</span> Google VRP — 2 Confirmed P2 Findings in Google AI Sample Repos</span>
@@ -357,6 +358,7 @@
         <span class="ticker-item"><span class="dot">●</span> 3 NVIDIA NeMo Guardrails Reports — Intigriti Triage</span>
         <span class="ticker-item hi"><span class="dot">●</span> Fracture — Autonomous AI Red Team Engine — MIT License</span>
         <span class="ticker-item"><span class="dot">●</span> OWASP LLM Top 10 Full Coverage + MCP Server Injection</span>
+        <span class="ticker-item"><span class="dot">●</span> Cinder Security Acknowledged in ModelEngine fit-framework v3.6.4</span>
         <span class="ticker-item hi"><span class="dot">●</span> Responsible Disclosure — All Findings Reported to Vendors</span>
     </div>
 </div>
@@ -405,6 +407,11 @@
                 <div class="counter-sub">2026</div>
             </div>
             <div class="counter-card">
+                <div class="counter-num" data-target="1">0</div>
+                <div class="counter-label">Vendor Security Acknowledgments</div>
+                <div class="counter-sub"><a href="https://github.com/ModelEngine-Group/fit-framework/releases/tag/v3.6.4" target="_blank" style="color:var(--green);text-decoration:none;font-size:0.58rem;">fit-framework v3.6.4 ↗</a></div>
+            </div>
+            <div class="counter-card">
                 <div class="counter-num" data-target="13">0</div>
                 <div class="counter-label">OWASP LLM Top 10 + Emerging Vectors</div>
                 <div class="counter-sub">Full coverage</div>
@@ -428,7 +435,10 @@
                     <span class="sev sev-crit">Critical</span>
                     <span class="fstatus s-ok">✓ Patch live — CVE pending</span>
                 </div>
-                <a href="https://github.com/advisories/GHSA-m4rw-22q2-87j8" target="_blank" class="fadv">GHSA-m4rw-22q2-87j8 ↗</a>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <a href="https://github.com/advisories/GHSA-m4rw-22q2-87j8" target="_blank" class="fadv">GHSA-m4rw-22q2-87j8 ↗</a>
+                    <a href="https://github.com/ModelEngine-Group/fit-framework/releases/tag/v3.6.4" target="_blank" class="fadv" style="color:var(--green);border-color:rgba(34,197,94,0.3);">🛡️ Vendor Acknowledgment ↗</a>
+                </div>
             </div>
             <div class="finding-card">
                 <div class="finding-id">CSR-2026-007</div>
@@ -498,7 +508,7 @@
                         <td>ModelEngine fit-framework</td>
                         <td>SSRF + Prompt Injection</td>
                         <td>Critical</td>
-                        <td><span class="badge b-live">Patch Live</span></td>
+                        <td><a href="https://github.com/ModelEngine-Group/fit-framework/releases/tag/v3.6.4" target="_blank" class="ghsa"><span class="badge b-live">Patch Live — v3.6.4 ↗</span></a></td>
                     </tr>
                     <tr>
                         <td><a href="https://github.com/langchain-ai/langchain/security/advisories/GHSA-4fpw-hjmg-x4qr" target="_blank" class="ghsa">GHSA-4fpw-hjmg-x4qr</a></td>
@@ -535,6 +545,20 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Vendor Acknowledgment -->
+        <div style="margin-top:2.5rem;background:var(--bg-card);border:1px solid rgba(34,197,94,0.15);border-radius:8px;padding:2rem 2.5rem;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--green),rgba(34,197,94,0.2));"></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:1rem;">🛡️ Vendor Acknowledgment</div>
+            <blockquote style="font-size:1rem;color:var(--text-primary);font-weight:400;line-height:1.7;border-left:3px solid var(--green);padding-left:1.2rem;margin:0;font-style:italic;">
+                "We would like to thank <strong>Cinder Security</strong> (Esteban Ramos) for responsibly disclosing the critical SSRF vulnerability in the FEL LangChain plugin (CSR-2026-002)."
+            </blockquote>
+            <div style="margin-top:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-secondary);">— ModelEngine Group, fit-framework v3.6.4</span>
+                <a href="https://github.com/ModelEngine-Group/fit-framework/releases/tag/v3.6.4" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--green);text-decoration:none;border:1px solid rgba(34,197,94,0.2);padding:0.2rem 0.6rem;border-radius:3px;transition:all 0.3s;">View Release ↗</a>
+            </div>
+        </div>
+
     </div>
 </section>
 
